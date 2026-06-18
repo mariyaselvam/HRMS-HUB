@@ -1,183 +1,318 @@
 <div class="space-y-6">
-    <div class="flex justify-between items-center px-4">
-        <div>
-            <h1 class="text-2xl font-bold text-slate-900 dark:text-slate-100 border-none">Payroll Management</h1>
-            <p class="text-slate-500 dark:text-slate-400">Generate and manage monthly employee salaries</p>
-        </div>
-
-        <div class="flex items-center gap-3">
-            <div
-                class="relative bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-1.5 flex items-center gap-2 shadow-sm">
-                <span class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Select
-                    Month</span>
-                <input type="month" [(ngModel)]="selectedMonth" (change)="loadPayroll()"
-                    class="border-none bg-transparent text-slate-700 dark:text-slate-100 font-medium focus:outline-none focus:ring-0">
-            </div>
-
-            @if (store.records().length === 0) {
-            <app-button label="Generate Payroll" icon="pi pi-bolt" variant="primary" [loading]="store.loading()"
-                (onClick)="onGenerate()"></app-button>
-            } @else if (canFinalize) {
-            <app-button label="Finalize Cycle" icon="pi pi-lock" variant="primary" [loading]="store.loading()"
-                (onClick)="onFinalize()"></app-button>
-            }
-        </div>
+  <div class="flex justify-between items-center px-4">
+    <div>
+      <h1 class="text-2xl font-bold text-slate-900 dark:text-slate-100 border-none">
+        Payroll Management
+      </h1>
+      <p class="text-slate-500 dark:text-slate-400">
+        Generate and manage monthly employee salaries
+      </p>
     </div>
 
-    @if (store.records().length > 0) {
+    <div class="flex items-center gap-3">
+      <div
+        class="relative bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-1.5 flex items-center gap-2 shadow-sm"
+      >
+        <span
+          class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider"
+          >Select Month</span
+        >
+        <input
+          type="month"
+          [(ngModel)]="selectedMonth"
+          (change)="loadPayroll()"
+          class="border-none bg-transparent text-slate-700 dark:text-slate-100 font-medium focus:outline-none focus:ring-0"
+        />
+      </div>
+
+      @if (store.records().length === 0) {
+        <app-button
+          label="Generate Payroll"
+          icon="pi pi-bolt"
+          variant="primary"
+          [loading]="store.loading()"
+          (onClick)="onGenerate()"
+        ></app-button>
+      } @else if (canFinalize) {
+        <app-button
+          label="Finalize Cycle"
+          icon="pi pi-lock"
+          variant="primary"
+          [loading]="store.loading()"
+          (onClick)="onFinalize()"
+        ></app-button>
+      }
+    </div>
+  </div>
+
+  @if (store.records().length > 0) {
     <!-- Stats Cards -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <p-card class="!shadow-sm !border-slate-100 dark:!border-slate-800">
-            <p class="text-slate-500 dark:text-slate-400 text-sm font-medium mb-1">Total Net Payout</p>
-            <p class="text-3xl font-bold text-slate-900 dark:text-slate-100">
-                LKR 1,240,500 <span
-                    class="text-xs font-normal text-emerald-500 bg-emerald-50 dark:bg-emerald-950/30 px-2 py-0.5 rounded-full">+4.2%</span>
-            </p>
-        </p-card>
-        <p-card class="!shadow-sm !border-slate-100 dark:!border-slate-800">
-            <p class="text-slate-500 dark:text-slate-400 text-sm font-medium mb-1">Total Deductions</p>
-            <p class="text-3xl font-bold text-slate-900 dark:text-slate-100 text-rose-600 dark:text-rose-400">LKR 42,300
-            </p>
-        </p-card>
-        <p-card class="!shadow-sm !border-slate-100 dark:!border-slate-800">
-            <p class="text-slate-500 dark:text-slate-400 text-sm font-medium mb-1">Employee Count</p>
-            <p class="text-3xl font-bold text-slate-900 dark:text-slate-100">{{ store.records().length }}</p>
-        </p-card>
+      <p-card class="!shadow-sm !border-slate-100 dark:!border-slate-800">
+        <p class="text-slate-500 dark:text-slate-400 text-sm font-medium mb-1">Total Net Payout</p>
+        <p class="text-3xl font-bold text-slate-900 dark:text-slate-100">
+          LKR 1,240,500
+          <span
+            class="text-xs font-normal text-emerald-500 bg-emerald-50 dark:bg-emerald-950/30 px-2 py-0.5 rounded-full"
+            >+4.2%</span
+          >
+        </p>
+      </p-card>
+      <p-card class="!shadow-sm !border-slate-100 dark:!border-slate-800">
+        <p class="text-slate-500 dark:text-slate-400 text-sm font-medium mb-1">Total Deductions</p>
+        <p
+          class="text-3xl font-bold text-slate-900 dark:text-slate-100 text-rose-600 dark:text-rose-400"
+        >
+          LKR 42,300
+        </p>
+      </p-card>
+      <p-card class="!shadow-sm !border-slate-100 dark:!border-slate-800">
+        <p class="text-slate-500 dark:text-slate-400 text-sm font-medium mb-1">Employee Count</p>
+        <p class="text-3xl font-bold text-slate-900 dark:text-slate-100">
+          {{ store.records().length }}
+        </p>
+      </p-card>
     </div>
 
     <!-- Payroll Records Table -->
     <p-card class="!shadow-sm !border-slate-100 dark:!border-slate-800">
-        <app-common-table 
-            [data]="processedRecords()" 
-            [columns]="columns"
-            [hasActions]="true"
-            [showEdit]="false"
-            [showDelete]="false"
-            [showView]="true"
-            (view)="onViewDetail($event)">
-        </app-common-table>
+      <app-common-table
+        [data]="processedRecords()"
+        [columns]="columns"
+        [hasActions]="true"
+        [showEdit]="false"
+        [showDelete]="false"
+        [showView]="true"
+        (view)="onViewDetail($event)"
+      >
+      </app-common-table>
     </p-card>
-    } @else {
+  } @else {
     <div
-        class="flex flex-col items-center justify-center py-20 bg-white dark:bg-slate-900 rounded-3xl border-2 border-dashed border-slate-100 dark:border-slate-800">
-        <div class="w-16 h-16 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4">
-            <i class="pi pi-money-bill text-3xl text-slate-300 dark:text-slate-600"></i>
-        </div>
-        <h3 class="text-lg font-bold text-slate-700 dark:text-slate-100">No payroll records for this month</h3>
-        <p class="text-slate-500 dark:text-slate-400 text-sm mt-1 max-w-sm text-center">
-            Click the "Generate Payroll" button to calculate salaries for the selected month based on attendance and
-            leave logs.
-        </p>
-        <app-button label="Generate Now" icon="pi pi-bolt" variant="primary" class="mt-6" [loading]="store.loading()"
-            (onClick)="onGenerate()"></app-button>
+      class="flex flex-col items-center justify-center py-20 bg-white dark:bg-slate-900 rounded-3xl border-2 border-dashed border-slate-100 dark:border-slate-800"
+    >
+      <div
+        class="w-16 h-16 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4"
+      >
+        <i class="pi pi-money-bill text-3xl text-slate-300 dark:text-slate-600"></i>
+      </div>
+      <h3 class="text-lg font-bold text-slate-700 dark:text-slate-100">
+        No payroll records for this month
+      </h3>
+      <p class="text-slate-500 dark:text-slate-400 text-sm mt-1 max-w-sm text-center">
+        Click the "Generate Payroll" button to calculate salaries for the selected month based on
+        attendance and leave logs.
+      </p>
+      <app-button
+        label="Generate Now"
+        icon="pi pi-bolt"
+        variant="primary"
+        class="mt-6"
+        [loading]="store.loading()"
+        (onClick)="onGenerate()"
+      ></app-button>
     </div>
-    }
+  }
 </div>
 
 <!-- Payroll Breakdown Dialog -->
-<p-dialog [header]="'Salary Breakdown - ' + selectedRecord()?.employeeName" [(visible)]="showDetail" [modal]="true"
-    [style]="{ width: '600px' }" [draggable]="false" [resizable]="false" class="!rounded-2xl">
-
-    @if (selectedRecord()) {
+<p-dialog
+  [header]="'Salary Breakdown - ' + selectedRecord()?.employeeName"
+  [(visible)]="showDetail"
+  [modal]="true"
+  [style]="{ width: '600px' }"
+  [draggable]="false"
+  [resizable]="false"
+  class="!rounded-2xl"
+>
+  @if (selectedRecord()) {
     <div class="space-y-6 pt-2">
-        <!-- Header Info -->
-        <div class="flex justify-between items-start bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-100 dark:border-slate-800">
-            <div>
-                <p class="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-1">Employee Details</p>
-                <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100">{{ selectedRecord().employeeName }}</h3>
-                <p class="text-sm text-slate-500">{{ selectedRecord().employee?.department?.name }} | {{ selectedRecord().employee?.employeeCode }}</p>
+      <!-- Header Info -->
+      <div
+        class="flex justify-between items-start bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-100 dark:border-slate-800"
+      >
+        <div>
+          <p class="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-1">
+            Employee Details
+          </p>
+          <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100">
+            {{ selectedRecord().employeeName }}
+          </h3>
+          <p class="text-sm text-slate-500">
+            {{ selectedRecord().employee?.department?.name }} |
+            {{ selectedRecord().employee?.employeeCode }}
+          </p>
+        </div>
+        <div class="text-right">
+          <p class="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-1">Status</p>
+          <span
+            class="px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider"
+            [ngClass]="
+              selectedRecord().status === 'finalized'
+                ? 'bg-emerald-50 text-emerald-700'
+                : 'bg-amber-50 text-amber-700'
+            "
+          >
+            {{ selectedRecord().status }}
+          </span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-8">
+        <!-- Earnings -->
+        <div class="space-y-3">
+          <h4 class="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+            <i class="pi pi-plus-circle text-emerald-500"></i> Earnings
+          </h4>
+          <div class="space-y-2">
+            <div class="flex justify-between text-sm">
+              <span class="text-slate-500">Basic Salary</span>
+              <span class="font-medium text-slate-700 dark:text-slate-300"
+                >₹{{ selectedRecord().basicSalary | number: '1.2-2' }}</span
+              >
             </div>
-            <div class="text-right">
-                <p class="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-1">Status</p>
-                <span class="px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider"
-                    [ngClass]="selectedRecord().status === 'finalized' ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'">
-                    {{ selectedRecord().status }}
+            <div class="flex justify-between text-sm">
+              <span class="text-slate-500">HRA</span>
+              <span class="font-medium text-slate-700 dark:text-slate-300"
+                >₹{{ selectedRecord().hra | number: '1.2-2' }}</span
+              >
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-slate-500">Transport</span>
+              <span class="font-medium text-slate-700 dark:text-slate-300"
+                >₹{{ selectedRecord().transportAllowance | number: '1.2-2' }}</span
+              >
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-slate-500">Other Allowances</span>
+              <span class="font-medium text-slate-700 dark:text-slate-300"
+                >₹{{ selectedRecord().otherAllowances | number: '1.2-2' }}</span
+              >
+            </div>
+          </div>
+          <p-divider></p-divider>
+          <div class="flex justify-between font-bold text-slate-900 dark:text-slate-100">
+            <span>Gross Salary</span>
+            <span>₹{{ selectedRecord().grossSalary | number: '1.2-2' }}</span>
+          </div>
+        </div>
+
+        <!-- Deductions -->
+        <div class="space-y-3">
+          <h4 class="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+            <i class="pi pi-minus-circle text-rose-500"></i> Deductions
+          </h4>
+          <div class="space-y-2">
+            <!-- Attendance Deduction -->
+            <div class="flex justify-between text-sm">
+              <div class="flex flex-col">
+                <span class="text-slate-500">Attendance (LOP)</span>
+                <span class="text-[10px] text-rose-400 font-medium">
+                  {{ getAbsentDays(selectedRecord()) }} days absent × ₹{{
+                    getDailyRate(selectedRecord()) | number: '1.0-0'
+                  }}/day
                 </span>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-2 gap-8">
-            <!-- Earnings -->
-            <div class="space-y-3">
-                <h4 class="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                    <i class="pi pi-plus-circle text-emerald-500"></i> Earnings
-                </h4>
-                <div class="space-y-2">
-                    <div class="flex justify-between text-sm">
-                        <span class="text-slate-500">Basic Salary</span>
-                        <span class="font-medium text-slate-700 dark:text-slate-300">₹{{ selectedRecord().basicSalary | number:'1.2-2' }}</span>
-                    </div>
-                    <div class="flex justify-between text-sm">
-                        <span class="text-slate-500">HRA</span>
-                        <span class="font-medium text-slate-700 dark:text-slate-300">₹{{ selectedRecord().hra | number:'1.2-2' }}</span>
-                    </div>
-                    <div class="flex justify-between text-sm">
-                        <span class="text-slate-500">Transport</span>
-                        <span class="font-medium text-slate-700 dark:text-slate-300">₹{{ selectedRecord().transportAllowance | number:'1.2-2' }}</span>
-                    </div>
-                    <div class="flex justify-between text-sm">
-                        <span class="text-slate-500">Other Allowances</span>
-                        <span class="font-medium text-slate-700 dark:text-slate-300">₹{{ selectedRecord().otherAllowances | number:'1.2-2' }}</span>
-                    </div>
-                </div>
-                <p-divider></p-divider>
-                <div class="flex justify-between font-bold text-slate-900 dark:text-slate-100">
-                    <span>Gross Salary</span>
-                    <span>₹{{ selectedRecord().grossSalary | number:'1.2-2' }}</span>
-                </div>
+              </div>
+              <span class="font-medium text-rose-600 dark:text-rose-400"
+                >-₹{{ selectedRecord().attendanceDeduction | number: '1.2-2' }}</span
+              >
             </div>
 
-            <!-- Deductions -->
-            <div class="space-y-3">
-                <h4 class="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                    <i class="pi pi-minus-circle text-rose-500"></i> Deductions
-                </h4>
-                <div class="space-y-2">
-                    <!-- Attendance Deduction -->
-                    <div class="flex justify-between text-sm">
-                        <div class="flex flex-col">
-                            <span class="text-slate-500">Attendance (LOP)</span>
-                            <span class="text-[10px] text-rose-400 font-medium">
-                                {{ getAbsentDays(selectedRecord()) }} days absent × ₹{{ getDailyRate(selectedRecord()) | number:'1.0-0' }}/day
-                            </span>
-                        </div>
-                        <span class="font-medium text-rose-600 dark:text-rose-400">-₹{{ selectedRecord().attendanceDeduction | number:'1.2-2' }}</span>
-                    </div>
-                    
-                    <div class="flex justify-between text-sm">
-                        <span class="text-slate-500">Provident Fund (PF)</span>
-                        <span class="font-medium text-rose-600 dark:text-rose-400">-₹{{ selectedRecord().pfDeduction | number:'1.2-2' }}</span>
-                    </div>
-                    <div class="flex justify-between text-sm">
-                        <span class="text-slate-500">ESI</span>
-                        <span class="font-medium text-rose-600 dark:text-rose-400">-₹{{ selectedRecord().esiDeduction | number:'1.2-2' }}</span>
-                    </div>
-                    <div class="flex justify-between text-sm">
-                        <span class="text-slate-500">Professional Tax</span>
-                        <span class="font-medium text-rose-600 dark:text-rose-400">-₹{{ selectedRecord().ptDeduction | number:'1.2-2' }}</span>
-                    </div>
-                </div>
-                <p-divider></p-divider>
-                <div class="flex justify-between font-bold text-rose-600 dark:text-rose-400">
-                    <span>Total Deductions</span>
-                    <span>-₹{{ getTotalDeductions(selectedRecord()) | number:'1.2-2' }}</span>
-                </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-slate-500">Provident Fund (PF)</span>
+              <span class="font-medium text-rose-600 dark:text-rose-400"
+                >-₹{{ selectedRecord().pfDeduction | number: '1.2-2' }}</span
+              >
             </div>
-        </div>
-
-        <!-- Total Payout -->
-        <div class="bg-indigo-600 p-4 rounded-xl text-white flex justify-between items-center shadow-lg shadow-indigo-200 dark:shadow-none">
-            <div>
-                <p class="text-indigo-100 text-xs font-bold uppercase tracking-wider">Net Payout</p>
-                <p class="text-2xl font-black">₹{{ selectedRecord().netSalary | number:'1.2-2' }}</p>
+            <div class="flex justify-between text-sm">
+              <span class="text-slate-500">ESI</span>
+              <span class="font-medium text-rose-600 dark:text-rose-400"
+                >-₹{{ selectedRecord().esiDeduction | number: '1.2-2' }}</span
+              >
             </div>
-            <i class="pi pi-wallet text-3xl text-indigo-300/50"></i>
-        </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-slate-500">Professional Tax</span>
+              <span class="font-medium text-rose-600 dark:text-rose-400"
+                >-₹{{ selectedRecord().ptDeduction | number: '1.2-2' }}</span
+              >
+            </div>
 
-        <div class="flex justify-end gap-3 mt-4">
-            <app-button label="Close" variant="secondary" (onClick)="showDetail.set(false)"></app-button>
-            <app-button label="Download Payslip" icon="pi pi-download" variant="primary"></app-button>
+            @if (!isEditing()) {
+              <div class="flex justify-between text-sm">
+                <span class="text-slate-500">Other Deductions</span>
+                <span class="font-medium text-rose-600 dark:text-rose-400"
+                  >-₹{{ selectedRecord().otherDeductions | number: '1.2-2' }}</span
+                >
+              </div>
+            } @else {
+              <div
+                class="flex flex-col gap-1 text-sm bg-slate-50 dark:bg-slate-900/60 p-2.5 rounded-lg border border-slate-100 dark:border-slate-800"
+              >
+                <label for="otherDeductions" class="text-xs font-semibold text-slate-500"
+                  >Other Deductions (Adjustment)</label
+                >
+                <input
+                  id="otherDeductions"
+                  type="number"
+                  [ngModel]="otherDeductionsInput()"
+                  (ngModelChange)="otherDeductionsInput.set($event)"
+                  class="w-full px-3 py-1.5 text-sm rounded-lg border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-indigo-500"
+                />
+              </div>
+            }
+          </div>
+          <p-divider></p-divider>
+          <div class="flex justify-between font-bold text-rose-600 dark:text-rose-400">
+            <span>Total Deductions</span>
+            <span>-₹{{ getTotalDeductions(selectedRecord()) | number: '1.2-2' }}</span>
+          </div>
         </div>
+      </div>
+
+      <!-- Total Payout -->
+      <div
+        class="bg-indigo-600 p-4 rounded-xl text-white flex justify-between items-center shadow-lg shadow-indigo-200 dark:shadow-none"
+      >
+        <div>
+          <p class="text-indigo-100 text-xs font-bold uppercase tracking-wider">Net Payout</p>
+          <p class="text-2xl font-black">
+            ₹{{
+              (isEditing()
+                ? selectedRecord().grossSalary - getTotalDeductions(selectedRecord())
+                : selectedRecord().netSalary
+              ) | number: '1.2-2'
+            }}
+          </p>
+        </div>
+        <i class="pi pi-wallet text-3xl text-indigo-300/50"></i>
+      </div>
+
+      <div class="flex justify-end gap-3 mt-4">
+        @if (!isEditing()) {
+          <app-button
+            label="Close"
+            variant="secondary"
+            (onClick)="showDetail.set(false)"
+          ></app-button>
+          @if (selectedRecord().status === 'draft') {
+            <app-button
+              label="Adjust"
+              icon="pi pi-pencil"
+              variant="secondary"
+              (onClick)="onStartEdit()"
+            ></app-button>
+          }
+          <app-button label="Download Payslip" icon="pi pi-download" variant="primary"></app-button>
+        } @else {
+          <app-button label="Cancel" variant="secondary" (onClick)="onCancelEdit()"></app-button>
+          <app-button
+            label="Save Changes"
+            icon="pi pi-check"
+            variant="primary"
+            (onClick)="onSaveAdjustment()"
+          ></app-button>
+        }
+      </div>
     </div>
-    }
+  }
 </p-dialog>

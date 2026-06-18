@@ -68,9 +68,36 @@ export class PayrollComponent implements OnInit {
         }
     }
 
+    isEditing = signal<boolean>(false);
+    otherDeductionsInput = signal<number>(0);
+
     onViewDetail(record: any) {
         this.selectedRecord.set(record);
+        this.isEditing.set(false);
         this.showDetail.set(true);
+    }
+
+    onStartEdit() {
+        const record = this.selectedRecord();
+        if (record) {
+            this.otherDeductionsInput.set(Number(record.otherDeductions || 0));
+            this.isEditing.set(true);
+        }
+    }
+
+    onCancelEdit() {
+        this.isEditing.set(false);
+    }
+
+    onSaveAdjustment() {
+        const record = this.selectedRecord();
+        if (record) {
+            this.store.updateRecord(record.id, {
+                otherDeductions: this.otherDeductionsInput()
+            }, this.selectedMonth);
+            this.showDetail.set(false);
+            this.isEditing.set(false);
+        }
     }
 
     get canFinalize(): boolean {
@@ -91,6 +118,7 @@ export class PayrollComponent implements OnInit {
         return Number(record.attendanceDeduction || 0) + 
                Number(record.pfDeduction || 0) + 
                Number(record.esiDeduction || 0) + 
-               Number(record.ptDeduction || 0);
+               Number(record.ptDeduction || 0) +
+               Number(record.otherDeductions || 0);
     }
 }

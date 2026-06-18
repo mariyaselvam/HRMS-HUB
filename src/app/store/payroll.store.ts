@@ -82,6 +82,19 @@ export class PayrollStore {
             });
     }
 
+    updateRecord(id: string, data: any, month: string) {
+        this.setLoading(true);
+        this.http.patch<ApiResponse<any>>(`${API_ENDPOINTS.PAYROLL}/records/${id}`, data)
+            .pipe(finalize(() => this.setLoading(false)))
+            .subscribe({
+                next: () => {
+                    this.notify.success('Record Adjusted', 'The payroll record adjustments have been saved.');
+                    this.loadRecords(month);
+                },
+                error: (err) => this.handleError('Adjustment Failed', err)
+            });
+    }
+
     private setLoading(loading: boolean) {
         this.state.update(s => ({ ...s, loading }));
     }
