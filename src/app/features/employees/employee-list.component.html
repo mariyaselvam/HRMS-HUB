@@ -4,12 +4,13 @@
             <h1 class="text-2xl font-bold text-slate-900 dark:text-slate-100 border-none">Employees</h1>
             <p class="text-slate-500 dark:text-slate-400">Manage your company workforce</p>
         </div>
+
+        <div class="flex items-center gap-2">
+            <!-- Onboard Employee Button -->
         <app-button label="Onboard Employee" icon="pi pi-user-plus" variant="primary"
             (onClick)="openAddDialog()"></app-button>
-    </div>
 
-    <div class="px-1 pt-2">
-        <!-- Attendance Filter Toggle Action (Adapted) -->
+              <!-- Attendance Filter Toggle Action (Adapted) -->
         <div class="flex justify-end mb-4 px-1">
             <div class="flex items-center gap-3">
                 <!-- Filter Trigger Button -->
@@ -35,6 +36,12 @@
                 }
             </div>
         </div>
+
+        </div>
+    </div>
+
+    <div class="px-1 pt-2">
+      
 
         <p-card class="!shadow-none !border-slate-300 dark:!border-slate-800 !mt-2 !overflow-hidden">
             <app-common-table [data]="filteredEmployees()" [columns]="columns" [hasActions]="true" [showView]="true"

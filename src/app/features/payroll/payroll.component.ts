@@ -119,6 +119,19 @@ export class PayrollComponent implements OnInit {
                Number(record.pfDeduction || 0) + 
                Number(record.esiDeduction || 0) + 
                Number(record.ptDeduction || 0) +
+               Number(record.incomeTax || 0) +
                Number(record.otherDeductions || 0);
+    }
+
+    get totalNetPayout(): number {
+        return this.store.records().reduce((sum, r) => sum + Number(r.netSalary || 0), 0);
+    }
+
+    get totalDeductionsSum(): number {
+        return this.store.records().reduce((sum, r) => sum + this.getTotalDeductions(r), 0);
+    }
+
+    onDownloadPayslip(record: any) {
+        this.store.downloadPayslip(record.id);
     }
 }

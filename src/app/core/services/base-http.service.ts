@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { APP_CONFIG } from '../constants/app.constants';
@@ -29,6 +29,13 @@ export class BaseHttpService {
 
     delete<T>(endpoint: string): Observable<T> {
         return this.http.delete<T>(`${this.baseUrl}${endpoint}`);
+    }
+
+    download(endpoint: string, filename: string): Observable<Blob> {
+        return this.http.get(`${this.baseUrl}${endpoint}`, {
+            responseType: 'blob',
+            headers: new HttpHeaders({ 'Accept': 'application/pdf' })
+        });
     }
 
     private getHttpParams(params: any): HttpParams {

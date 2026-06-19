@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { Observable, tap, catchError, throwError } from 'rxjs';
 import { AuthUser, LoginRequest, LoginResponse } from '../models/auth.model';
 import { APP_CONFIG } from '../constants/app.constants';
+import { hasRole } from '../utils/role.utils';
+import { SystemRole } from '../enums/app.enums';
 
 const TOKEN_KEY = 'hrms_token';
 const USER_KEY = 'hrms_user';
@@ -50,7 +52,7 @@ export class AuthService {
 
     hasRole(...roles: string[]): boolean {
         const userRole = this.userRole();
-        return roles.some(r => r.toLowerCase() === userRole.toLowerCase());
+        return hasRole(userRole, roles as SystemRole[]);
     }
 
     private loadTokenFromStorage(): string | null {

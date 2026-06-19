@@ -95,6 +95,22 @@ export class PayrollStore {
             });
     }
 
+    downloadPayslip(recordId: string) {
+        const endpoint = API_ENDPOINTS.PAYROLL_RECORD_DOWNLOAD(recordId);
+        this.http.download(endpoint, `payslip-${recordId}.pdf`).subscribe({
+            next: (blob) => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `payslip-${recordId}.pdf`;
+                a.click();
+                window.URL.revokeObjectURL(url);
+                this.notify.success('Payslip Downloaded', 'Payslip PDF has been downloaded successfully.');
+            },
+            error: (err) => this.handleError('Download Failed', err)
+        });
+    }
+
     private setLoading(loading: boolean) {
         this.state.update(s => ({ ...s, loading }));
     }

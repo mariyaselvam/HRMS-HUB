@@ -36,6 +36,9 @@ export interface PayrollRecord {
     pfDeduction: number;
     esiDeduction: number;
     ptDeduction: number;
+    incomeTax: number;
+    otherDeductions: number;
+    overtimePay: number;
     netSalary: number;
     workingDays: number;
     presentDays: number;
@@ -48,6 +51,20 @@ export interface PayrollRecord {
         department: { name: string };
         personalDetails: { firstName: string; lastName: string };
     };
+}
+
+export interface PayrollRun {
+    id: string;
+    companyId: string;
+    payrollPeriod: string;
+    runType: 'Manual' | 'Automatic';
+    triggeredBy?: string;
+    status: 'Processing' | 'Completed' | 'Failed';
+    employeeCount: number;
+    totalAmount: number;
+    startedAt: string;
+    completedAt?: string;
+    errorMessage?: string;
 }
 
 export interface PayrollState {

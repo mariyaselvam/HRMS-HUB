@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard, loginGuard } from './core/guards/auth.guard';
+import { roleGuard } from './core/guards/role.guard';
+import { SystemRole } from './core/enums/app.enums';
 
 export const routes: Routes = [
     {
@@ -15,48 +17,65 @@ export const routes: Routes = [
     {
         path: 'employees',
         loadComponent: () => import('./features/employees/employee-list.component').then(m => m.EmployeeListComponent),
-        canActivate: [authGuard]
+        canActivate: [authGuard, roleGuard([
+            SystemRole.SUPER_ADMIN, SystemRole.COMPANY_ADMIN, SystemRole.HR_MANAGER, SystemRole.ONBOARDING_MANAGER
+        ])]
     },
-
     {
         path: 'employees/onboard',
         loadComponent: () => import('./features/onboarding/onboarding.component').then(m => m.OnboardingComponent),
-        canActivate: [authGuard]
+        canActivate: [authGuard, roleGuard([
+            SystemRole.SUPER_ADMIN, SystemRole.COMPANY_ADMIN, SystemRole.HR_MANAGER, SystemRole.ONBOARDING_MANAGER
+        ])]
     },
     {
         path: 'employees/onboard/:id',
         loadComponent: () => import('./features/onboarding/onboarding.component').then(m => m.OnboardingComponent),
-        canActivate: [authGuard]
+        canActivate: [authGuard, roleGuard([
+            SystemRole.SUPER_ADMIN, SystemRole.COMPANY_ADMIN, SystemRole.HR_MANAGER, SystemRole.ONBOARDING_MANAGER
+        ])]
     },
     {
         path: 'employees/:id',
         loadComponent: () => import('./features/employees/employee-detail.component').then(m => m.EmployeeDetailComponent),
-        canActivate: [authGuard]
+        canActivate: [authGuard, roleGuard([
+            SystemRole.SUPER_ADMIN, SystemRole.COMPANY_ADMIN, SystemRole.HR_MANAGER, SystemRole.ONBOARDING_MANAGER
+        ])]
     },
     {
         path: 'departments',
         loadComponent: () => import('./features/departments/department-list.component').then(m => m.DepartmentListComponent),
-        canActivate: [authGuard]
+        canActivate: [authGuard, roleGuard([
+            SystemRole.SUPER_ADMIN, SystemRole.COMPANY_ADMIN, SystemRole.HR_MANAGER
+        ])]
     },
     {
         path: 'teams',
         loadComponent: () => import('./features/teams/team-list.component').then(m => m.TeamListComponent),
-        canActivate: [authGuard]
+        canActivate: [authGuard, roleGuard([
+            SystemRole.SUPER_ADMIN, SystemRole.COMPANY_ADMIN, SystemRole.HR_MANAGER
+        ])]
     },
     {
         path: 'branches',
         loadComponent: () => import('./features/locations/location-list.component').then(m => m.LocationListComponent),
-        canActivate: [authGuard]
+        canActivate: [authGuard, roleGuard([
+            SystemRole.SUPER_ADMIN, SystemRole.COMPANY_ADMIN, SystemRole.HR_MANAGER
+        ])]
     },
     {
         path: 'holidays',
         loadComponent: () => import('./features/holidays/holiday-list.component').then(m => m.HolidayListComponent),
-        canActivate: [authGuard]
+        canActivate: [authGuard, roleGuard([
+            SystemRole.SUPER_ADMIN, SystemRole.COMPANY_ADMIN, SystemRole.HR_MANAGER
+        ])]
     },
     {
         path: 'leave/types',
         loadComponent: () => import('./features/leave/leave-types.component').then(m => m.LeaveTypesComponent),
-        canActivate: [authGuard]
+        canActivate: [authGuard, roleGuard([
+            SystemRole.SUPER_ADMIN, SystemRole.COMPANY_ADMIN, SystemRole.HR_MANAGER
+        ])]
     },
     {
         path: 'leave/requests',
@@ -66,7 +85,9 @@ export const routes: Routes = [
     {
         path: 'leave/approvals',
         loadComponent: () => import('./features/leave/leave-approvals.component').then(m => m.LeaveApprovalsComponent),
-        canActivate: [authGuard]
+        canActivate: [authGuard, roleGuard([
+            SystemRole.SUPER_ADMIN, SystemRole.COMPANY_ADMIN, SystemRole.HR_MANAGER, SystemRole.BRANCH_MANAGER
+        ])]
     },
     {
         path: 'attendance',
@@ -76,12 +97,16 @@ export const routes: Routes = [
     {
         path: 'payroll',
         loadComponent: () => import('./features/payroll/payroll.component').then(m => m.PayrollComponent),
-        canActivate: [authGuard]
+        canActivate: [authGuard, roleGuard([
+            SystemRole.SUPER_ADMIN, SystemRole.COMPANY_ADMIN, SystemRole.HR_MANAGER, SystemRole.PAYROLL_MANAGER
+        ])]
     },
     {
         path: 'settings',
         loadChildren: () => import('./features/settings/settings.routes').then(m => m.SETTINGS_ROUTES),
-        canActivate: [authGuard]
+        canActivate: [authGuard, roleGuard([
+            SystemRole.SUPER_ADMIN, SystemRole.COMPANY_ADMIN, SystemRole.HR_MANAGER
+        ])]
     },
     { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     { path: '**', redirectTo: 'dashboard' }

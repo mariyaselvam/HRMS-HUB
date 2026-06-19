@@ -51,11 +51,7 @@
       <p-card class="!shadow-sm !border-slate-100 dark:!border-slate-800">
         <p class="text-slate-500 dark:text-slate-400 text-sm font-medium mb-1">Total Net Payout</p>
         <p class="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          LKR 1,240,500
-          <span
-            class="text-xs font-normal text-emerald-500 bg-emerald-50 dark:bg-emerald-950/30 px-2 py-0.5 rounded-full"
-            >+4.2%</span
-          >
+          ₹{{ totalNetPayout | number:'1.2-2' }}
         </p>
       </p-card>
       <p-card class="!shadow-sm !border-slate-100 dark:!border-slate-800">
@@ -63,7 +59,7 @@
         <p
           class="text-3xl font-bold text-slate-900 dark:text-slate-100 text-rose-600 dark:text-rose-400"
         >
-          LKR 42,300
+          ₹{{ totalDeductionsSum | number:'1.2-2' }}
         </p>
       </p-card>
       <p-card class="!shadow-sm !border-slate-100 dark:!border-slate-800">
@@ -302,7 +298,7 @@
               (onClick)="onStartEdit()"
             ></app-button>
           }
-          <app-button label="Download Payslip" icon="pi pi-download" variant="primary"></app-button>
+          <app-button label="Download Payslip" icon="pi pi-download" variant="primary" (onClick)="onDownloadPayslip(selectedRecord())"></app-button>
         } @else {
           <app-button label="Cancel" variant="secondary" (onClick)="onCancelEdit()"></app-button>
           <app-button

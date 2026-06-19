@@ -42,7 +42,7 @@ export class App {
     isDesktopCollapsed = signal(false);
 
     constructor() {
-        if (this.authService.isLoggedIn() && this.authService.hasRole('admin', 'super_admin')) {
+        if (this.authService.isLoggedIn() && this.authService.hasRole('company_admin')) {
             this.locationStore.loadLocations();
         }
     }

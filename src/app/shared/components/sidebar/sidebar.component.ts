@@ -4,6 +4,8 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { SIDEBAR_NAV_ITEMS, SIDEBAR_APP_TITLE, SidebarNavItem } from '../../../core/constants/sidebar.constants';
 import { inject } from '@angular/core';
 import { AuthService } from '../../../core/services/auth.service';
+import { hasRole } from '../../../core/utils/role.utils';
+import { SystemRole } from '../../../core/enums/app.enums';
 @Component({
     selector: 'app-sidebar',
     standalone: true,
@@ -19,9 +21,9 @@ export class SidebarComponent {
     readonly logo: string = '/logo1.png';
 
     readonly navItems = computed(() => {
-        const userRole = this.authService.userRole().toLowerCase();
+        const userRole = this.authService.userRole();
         return SIDEBAR_NAV_ITEMS.filter(item =>
-            !item.roles || item.roles.includes(userRole)
+            !item.roles || hasRole(userRole, item.roles as SystemRole[])
         );
     });
 
