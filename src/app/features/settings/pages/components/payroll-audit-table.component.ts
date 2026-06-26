@@ -1,46 +1,21 @@
 import { Component, Input, OnChanges, inject, SimpleChanges } from '@angular/core';
-import { CommonModule, DatePipe, DecimalPipe } from '@angular/common';
-import { TableModule } from 'primeng/table';
-import { TagModule } from 'primeng/tag';
+import { CommonModule } from '@angular/common';
+import { CommonTableComponent, Column } from '../../../../shared/components/common-table/common-table.component';
 import { PayrollRulesService } from '../../services/payroll-rules.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 
 @Component({
     selector: 'app-payroll-audit-table',
     standalone: true,
-    imports: [CommonModule, TableModule, TagModule, DatePipe, DecimalPipe],
+    imports: [CommonModule, CommonTableComponent],
     template: `
         <div class="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden">
-            <p-table [value]="runs" [loading]="loading" [paginator]="true" [rows]="10" styleClass="p-datatable-sm p-datatable-gridlines">
-                <ng-template pTemplate="header">
-                    <tr>
-                        <th class="!bg-slate-50 dark:!bg-slate-900 !text-slate-700 dark:!text-slate-300">Period</th>
-                        <th class="!bg-slate-50 dark:!bg-slate-900 !text-slate-700 dark:!text-slate-300">Run Type</th>
-                        <th class="!bg-slate-50 dark:!bg-slate-900 !text-slate-700 dark:!text-slate-300">Started At</th>
-                        <th class="!bg-slate-50 dark:!bg-slate-900 !text-slate-700 dark:!text-slate-300">Status</th>
-                        <th class="!bg-slate-50 dark:!bg-slate-900 !text-slate-700 dark:!text-slate-300">Employees</th>
-                        <th class="!bg-slate-50 dark:!bg-slate-900 !text-slate-700 dark:!text-slate-300">Total Amount</th>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-run>
-                    <tr>
-                        <td>{{ run.payrollPeriod }}</td>
-                        <td>{{ run.runType }}</td>
-                        <td>{{ run.startedAt | date:'medium' }}</td>
-                        <td>
-                            <p-tag [severity]="getSeverity(run.status)" [value]="run.status"></p-tag>
-                            <span *ngIf="run.errorMessage" class="text-xs text-red-500 block mt-1" [title]="run.errorMessage">Error details</span>
-                        </td>
-                        <td>{{ run.employeeCount }}</td>
-                        <td>{{ run.totalAmount | number:'1.2-2' }}</td>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="emptymessage">
-                    <tr>
-                        <td colspan="6" class="text-center p-4">No payroll runs found.</td>
-                    </tr>
-                </ng-template>
-            </p-table>
+            <app-common-table 
+                [data]="runs" 
+                [columns]="columns" 
+                [loading]="loading"
+                [rows]="10">
+            </app-common-table>
         </div>
     `
 })
@@ -52,6 +27,15 @@ export class PayrollAuditTableComponent implements OnChanges {
 
     runs: any[] = [];
     loading = false;
+
+    columns: Column[] = [
+        { field: 'payrollPeriod', header: 'Period', type: 'text' },
+        { field: 'runType', header: 'Run Type', type: 'text' },
+        { field: 'startedAt', header: 'Started At', type: 'datetime' },
+        { field: 'status', header: 'Status', type: 'status' },
+        { field: 'employeeCount', header: 'Employees', type: 'text' },
+        { field: 'totalAmount', header: 'Total Amount', type: 'number' }
+    ];
 
     ngOnChanges(changes: SimpleChanges) {
         if (changes['refreshTrigger']) {
@@ -71,14 +55,5 @@ export class PayrollAuditTableComponent implements OnChanges {
                 this.loading = false;
             }
         });
-    }
-
-    getSeverity(status: string): 'success' | 'info' | 'warn' | 'danger' | 'secondary' | 'contrast' {
-        switch (status) {
-            case 'Completed': return 'success';
-            case 'Processing': return 'warn';
-            case 'Failed': return 'danger';
-            default: return 'info';
-        }
     }
 }

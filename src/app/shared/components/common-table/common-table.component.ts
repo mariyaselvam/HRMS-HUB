@@ -9,7 +9,7 @@ import { MenuItem } from 'primeng/api';
 export interface Column {
     field: string;
     header: string;
-    type?: 'text' | 'date' | 'time' | 'duration' | 'status' | 'progress' | 'action' | 'boolean';
+    type?: 'text' | 'date' | 'datetime' | 'time' | 'duration' | 'status' | 'progress' | 'action' | 'boolean' | 'number';
 }
 
 @Component({
@@ -26,6 +26,7 @@ export class CommonTableComponent {
     showEdit = input<boolean>(true);
     showDelete = input<boolean>(true);
     showView = input<boolean>(false);
+    loading = input<boolean>(false);
 
     // Lazy Loading properties
     lazy = input<boolean>(false);
@@ -78,16 +79,19 @@ export class CommonTableComponent {
             case 'active':
             case 'approved':
             case 'paid':
+            case 'completed':
             case 'true':
                 return 'bg-emerald-50 text-emerald-700 border-emerald-100 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-900/50';
             case 'absent':
             case 'inactive':
             case 'rejected':
             case 'unpaid':
+            case 'failed':
             case 'false':
                 return 'bg-rose-50 text-rose-700 border-rose-100 dark:bg-rose-950/30 dark:text-rose-400 dark:border-rose-900/50';
             case 'late':
             case 'pending':
+            case 'processing':
             case 'probation':
                 return 'bg-amber-50 text-amber-700 border-amber-100 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-900/50';
             case 'notice':

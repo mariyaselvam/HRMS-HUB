@@ -1,4 +1,4 @@
-<p-table [value]="data()" [lazy]="lazy()" [totalRecords]="totalRecords()" [loading]="false" [paginator]="true"
+<p-table [value]="data()" [lazy]="lazy()" [totalRecords]="totalRecords()" [loading]="loading()" [paginator]="true"
     [rows]="rows()" (onLazyLoad)="onLazyLoad.emit($event)" [responsiveLayout]="'scroll'" [class]="'p-datatable-sm'"
     [scrollable]="true" scrollHeight="calc(100vh - 300px)"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true">
@@ -38,12 +38,16 @@
                     </div>
                     <span class="text-xs font-medium text-slate-500">{{ resolveFieldValue(rowData, col.field) }}%</span>
                 </div>
-                } @else if (col.type === 'date') {
+                 } @else if (col.type === 'date') {
                 {{ resolveFieldValue(rowData, col.field) | date }}
+                 } @else if (col.type === 'datetime') {
+                {{ resolveFieldValue(rowData, col.field) | date:'medium' }}
                 } @else if (col.type === 'time') {
                 {{ resolveFieldValue(rowData, col.field) | date: 'shortTime' }}
                 } @else if (col.type === 'duration') {
                 {{ formatDuration(resolveFieldValue(rowData, col.field)) }}
+                } @else if (col.type === 'number') {
+                {{ resolveFieldValue(rowData, col.field) | number:'1.2-2' }}
                 } @else if (col.type === 'boolean') {
                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border"
                     [ngClass]="getStatusClass(resolveFieldValue(rowData, col.field) ? 'true' : 'false')">
