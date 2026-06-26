@@ -2,11 +2,12 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AttendanceStore } from '../../store/attendance.store';
 import { EmployeeStore } from '../../store/employee.store';
-import { CommonTableComponent, Column } from '../../shared/components/common-table.component';
-import { CommonButtonComponent } from '../../shared/components/common-button.component';
-import { CommonInputComponent } from '../../shared/components/common-input.component';
-import { CommonSelectComponent } from '../../shared/components/common-select.component';
-import { CommonDatepickerComponent } from '../../shared/components/common-datepicker.component';
+import { CommonTableComponent, Column } from '../../shared/components/common-table/common-table.component';
+import { CommonButtonComponent } from '../../shared/components/common-button.component/common-button.component';
+import { CommonInputComponent } from '../../shared/components/common-input/common-input.component';
+import { CommonSelectComponent } from '../../shared/components/common-select/common-select.component';
+import { CommonDatePickerComponent } from '../../shared/components/datepicker/common-date-picker/common-date-picker.component';
+import { CommonTimePickerComponent } from '../../shared/components/datepicker/common-time-picker/common-time-picker.component';
 import { CardModule } from 'primeng/card';
 import { DialogModule } from 'primeng/dialog';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -21,7 +22,8 @@ import { CreateShiftInput, AssignShiftInput } from '../../core/models/attendance
         CommonButtonComponent,
         CommonInputComponent,
         CommonSelectComponent,
-        CommonDatepickerComponent,
+        CommonDatePickerComponent,
+        CommonTimePickerComponent,
         CardModule,
         DialogModule,
         ReactiveFormsModule

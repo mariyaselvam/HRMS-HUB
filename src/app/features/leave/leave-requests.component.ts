@@ -1,14 +1,14 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LeaveStore } from '../../store/leave.store';
-import { CommonTableComponent, Column } from '../../shared/components/common-table.component';
-import { CommonButtonComponent } from '../../shared/components/common-button.component';
+import { CommonTableComponent, Column } from '../../shared/components/common-table/common-table.component';
+import { CommonButtonComponent } from '../../shared/components/common-button.component/common-button.component';
 import { CardModule } from 'primeng/card';
 import { DialogModule } from 'primeng/dialog';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CommonInputComponent } from '../../shared/components/common-input.component';
-import { CommonSelectComponent } from '../../shared/components/common-select.component';
-import { CommonDatepickerComponent } from '../../shared/components/common-datepicker.component';
+import { CommonInputComponent } from '../../shared/components/common-input/common-input.component';
+import { CommonSelectComponent } from '../../shared/components/common-select/common-select.component';
+import { CommonDatePickerComponent } from '../../shared/components/datepicker/common-date-picker/common-date-picker.component';
 
 @Component({
     selector: 'app-leave-requests',
@@ -22,7 +22,7 @@ import { CommonDatepickerComponent } from '../../shared/components/common-datepi
         ReactiveFormsModule,
         CommonInputComponent,
         CommonSelectComponent,
-        CommonDatepickerComponent
+        CommonDatePickerComponent
     ],
     templateUrl: './leave-requests.component.html'
 })

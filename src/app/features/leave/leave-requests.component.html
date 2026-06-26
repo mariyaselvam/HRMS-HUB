@@ -24,12 +24,12 @@
         </app-common-select>
 
         <div class="grid grid-cols-2 gap-4">
-            <app-common-datepicker label="Start Date" formControlName="startDate"
+            <app-common-date-picker label="Start Date" formControlName="startDate"
                 [error]="getErrorMessage('startDate')">
-            </app-common-datepicker>
+            </app-common-date-picker>
 
-            <app-common-datepicker label="End Date" formControlName="endDate" [error]="getErrorMessage('endDate')">
-            </app-common-datepicker>
+            <app-common-date-picker label="End Date" formControlName="endDate" [error]="getErrorMessage('endDate')">
+            </app-common-date-picker>
         </div>
 
         <app-common-input label="Reason" formControlName="reason" placeholder="Why are you taking leave?"

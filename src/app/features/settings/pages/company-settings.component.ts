@@ -4,8 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
 import { SettingsStore } from '../../../store/settings.store';
-import { CommonInputComponent } from '../../../shared/components/common-input.component';
-import { CommonButtonComponent } from '../../../shared/components/common-button.component';
+import { CommonInputComponent } from '../../../shared/components/common-input/common-input.component';
+import { CommonButtonComponent } from '../../../shared/components/common-button.component/common-button.component';
 
 @Component({
     selector: 'app-company-settings',

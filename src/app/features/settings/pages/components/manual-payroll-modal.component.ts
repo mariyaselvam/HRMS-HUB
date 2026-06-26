@@ -2,8 +2,8 @@ import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
-import { CommonButtonComponent } from '../../../../shared/components/common-button.component';
-import { CommonInputComponent } from '../../../../shared/components/common-input.component';
+import { CommonButtonComponent } from '../../../../shared/components/common-button.component/common-button.component';
+import { CommonInputComponent } from '../../../../shared/components/common-input/common-input.component';
 import { PayrollRulesService } from '../../services/payroll-rules.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 

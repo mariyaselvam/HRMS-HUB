@@ -1,12 +1,12 @@
 import { Component, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DepartmentStore } from '../../store/department.store';
-import { CommonTableComponent, Column } from '../../shared/components/common-table.component';
-import { CommonButtonComponent } from '../../shared/components/common-button.component';
+import { CommonTableComponent, Column } from '../../shared/components/common-table/common-table.component';
+import { CommonButtonComponent } from '../../shared/components/common-button.component/common-button.component';
 import { CardModule } from 'primeng/card';
 import { DialogModule } from 'primeng/dialog';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { CommonInputComponent } from '../../shared/components/common-input.component';
+import { CommonInputComponent } from '../../shared/components/common-input/common-input.component';
 import { Department } from '../../core/models/department.model';
 import { NotificationService } from '../../core/services/notification.service';
 import { ContextStore } from '../../store/context.store';

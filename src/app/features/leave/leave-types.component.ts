@@ -1,13 +1,13 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LeaveStore } from '../../store/leave.store';
-import { CommonTableComponent, Column } from '../../shared/components/common-table.component';
-import { CommonButtonComponent } from '../../shared/components/common-button.component';
+import { CommonTableComponent, Column } from '../../shared/components/common-table/common-table.component';
+import { CommonButtonComponent } from '../../shared/components/common-button.component/common-button.component';
 import { CardModule } from 'primeng/card';
 import { DialogModule } from 'primeng/dialog';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CommonInputComponent } from '../../shared/components/common-input.component';
-import { CommonSelectComponent } from '../../shared/components/common-select.component';
+import { CommonInputComponent } from '../../shared/components/common-input/common-input.component';
+import { CommonSelectComponent } from '../../shared/components/common-select/common-select.component';
 import { NotificationService } from '../../core/services/notification.service';
 import { ContextStore } from '../../store/context.store';
 

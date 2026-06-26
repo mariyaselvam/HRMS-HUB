@@ -6,7 +6,9 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "storybook": "ng run hrms-fe:storybook",
+    "build-storybook": "ng run hrms-fe:build-storybook"
   },
   "prettier": {
     "printWidth": 100,
@@ -40,13 +42,23 @@
     "tslib": "^2.3.0"
   },
   "devDependencies": {
+    "@angular-devkit/architect": "^0.2101.0",
+    "@angular-devkit/build-angular": "^21.1.0",
+    "@angular-devkit/core": "^21.1.0",
     "@angular/build": "^21.1.4",
     "@angular/cli": "^21.1.4",
     "@angular/compiler-cli": "^21.1.0",
+    "@angular/platform-browser-dynamic": "^21.1.0",
+    "@compodoc/compodoc": "^1.2.1",
+    "@storybook/addon-a11y": "^10.4.6",
+    "@storybook/addon-docs": "^10.4.6",
+    "@storybook/addon-onboarding": "^10.4.6",
+    "@storybook/angular": "^10.4.6",
     "@tailwindcss/postcss": "^4.2.0",
     "autoprefixer": "^10.4.24",
     "jsdom": "^27.1.0",
     "postcss": "^8.5.6",
+    "storybook": "^10.4.6",
     "tailwindcss": "^3.4.17",
     "typescript": "~5.9.2",
     "vitest": "^4.0.8"

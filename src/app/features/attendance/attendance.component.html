@@ -214,10 +214,10 @@
                 </app-common-select>
 
                 <!-- Date Range -->
-                <app-common-datepicker label="Time Period" [(ngModel)]="dateRange"
-                    (ngModelChange)="dateRange.set($event)" selectionMode="range"
+                <app-common-range-picker label="Time Period" [(ngModel)]="dateRange"
+                    (ngModelChange)="dateRange.set($event)"
                     placeholder="Select start and end date..." appendTo="body">
-                </app-common-datepicker>
+                </app-common-range-picker>
             </div>
 
             <div

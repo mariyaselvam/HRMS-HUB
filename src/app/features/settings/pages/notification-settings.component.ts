@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CardModule } from 'primeng/card';
 import { SettingsStore } from '../../../store/settings.store';
-import { CommonButtonComponent } from '../../../shared/components/common-button.component';
+import { CommonButtonComponent } from '../../../shared/components/common-button.component/common-button.component';
 
 @Component({
     selector: 'app-notification-settings',

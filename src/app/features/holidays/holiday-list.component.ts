@@ -2,13 +2,13 @@ import { Component, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { HolidayStore } from '../../store/holiday.store';
-import { CommonTableComponent, Column } from '../../shared/components/common-table.component';
-import { CommonButtonComponent } from '../../shared/components/common-button.component';
+import { CommonTableComponent, Column } from '../../shared/components/common-table/common-table.component';
+import { CommonButtonComponent } from '../../shared/components/common-button.component/common-button.component';
 import { CardModule } from 'primeng/card';
 import { DialogModule } from 'primeng/dialog';
 import { CheckboxModule } from 'primeng/checkbox';
-import { CommonInputComponent } from '../../shared/components/common-input.component';
-import { CommonDatepickerComponent } from '../../shared/components/common-datepicker.component';
+import { CommonInputComponent } from '../../shared/components/common-input/common-input.component';
+import { CommonDatePickerComponent } from '../../shared/components/datepicker/common-date-picker/common-date-picker.component';
 import { Holiday } from '../../core/models/holiday.model';
 import { NotificationService } from '../../core/services/notification.service';
 import { ContextStore } from '../../store/context.store';
@@ -26,7 +26,7 @@ import { ContextStore } from '../../store/context.store';
         FormsModule,
         ReactiveFormsModule,
         CommonInputComponent,
-        CommonDatepickerComponent
+        CommonDatePickerComponent
     ],
     templateUrl: './holiday-list.component.html'
 })

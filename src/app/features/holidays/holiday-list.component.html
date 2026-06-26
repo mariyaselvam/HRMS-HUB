@@ -19,8 +19,8 @@
     [style]="{ width: '450px' }" class="!rounded-2xl">
 
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4 pt-4">
-        <app-common-datepicker label="Holiday Date" formControlName="date" [error]="getErrorMessage('date')">
-        </app-common-datepicker>
+        <app-common-date-picker label="Holiday Date" formControlName="date" [error]="getErrorMessage('date')">
+        </app-common-date-picker>
 
         <app-common-input label="Holiday Name" formControlName="name" placeholder="e.g. Independence Day"
             [error]="getErrorMessage('name')">

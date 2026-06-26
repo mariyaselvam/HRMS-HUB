@@ -1,8 +1,9 @@
 import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PayrollStore } from '../../store/payroll.store';
-import { CommonTableComponent, Column } from '../../shared/components/common-table.component';
-import { CommonButtonComponent } from '../../shared/components/common-button.component';
+import { CommonTableComponent, Column } from '../../shared/components/common-table/common-table.component';
+import { CommonButtonComponent } from '../../shared/components/common-button.component/common-button.component';
+import { CommonMonthPickerComponent } from '../../shared/components/datepicker/common-month-picker/common-month-picker.component';
 import { CardModule } from 'primeng/card';
 import { FormsModule } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
@@ -15,6 +16,7 @@ import { DividerModule } from 'primeng/divider';
         CommonModule,
         CommonTableComponent,
         CommonButtonComponent,
+        CommonMonthPickerComponent,
         CardModule,
         FormsModule,
         DialogModule,
@@ -25,7 +27,7 @@ import { DividerModule } from 'primeng/divider';
 export class PayrollComponent implements OnInit {
     protected store = inject(PayrollStore);
 
-    selectedMonth: string = new Date().toISOString().slice(0, 7); // YYYY-MM
+    selectedMonth: Date | undefined = new Date();
     selectedRecord = signal<any>(null);
     showDetail = signal<boolean>(false);
 
@@ -49,22 +51,30 @@ export class PayrollComponent implements OnInit {
         this.loadPayroll();
     }
 
+    private getMonthParam(): string {
+        const date = this.selectedMonth ?? new Date();
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        return `${year}-${month}`;
+    }
+
     loadPayroll() {
-        if (this.selectedMonth) {
-            this.store.loadRecords(this.selectedMonth);
-        }
+        this.store.loadRecords(this.getMonthParam());
+    }
+
+    onMonthChange(date: Date | undefined) {
+        this.selectedMonth = date;
+        this.loadPayroll();
     }
 
     onGenerate() {
-        if (this.selectedMonth) {
-            this.store.generatePayroll({ month: this.selectedMonth });
-        }
+        this.store.generatePayroll({ month: this.getMonthParam() });
     }
 
     onFinalize() {
         const firstRecord = this.store.records()[0];
         if (firstRecord && confirm('Are you sure you want to finalize this month\'s payroll? This cannot be undone.')) {
-            this.store.finalizePayroll(firstRecord.payrollCycleId, this.selectedMonth);
+            this.store.finalizePayroll(firstRecord.payrollCycleId, this.getMonthParam());
         }
     }
 
@@ -94,7 +104,7 @@ export class PayrollComponent implements OnInit {
         if (record) {
             this.store.updateRecord(record.id, {
                 otherDeductions: this.otherDeductionsInput()
-            }, this.selectedMonth);
+            }, this.getMonthParam());
             this.showDetail.set(false);
             this.isEditing.set(false);
         }

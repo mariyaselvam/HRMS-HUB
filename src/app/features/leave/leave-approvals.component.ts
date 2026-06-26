@@ -1,12 +1,12 @@
 import { Component, computed, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LeaveStore } from '../../store/leave.store';
-import { CommonTableComponent, Column } from '../../shared/components/common-table.component';
-import { CommonButtonComponent } from '../../shared/components/common-button.component';
+import { CommonTableComponent, Column } from '../../shared/components/common-table/common-table.component';
+import { CommonButtonComponent } from '../../shared/components/common-button.component/common-button.component';
 import { CardModule } from 'primeng/card';
 import { DialogModule } from 'primeng/dialog';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { CommonInputComponent } from '../../shared/components/common-input.component';
+import { CommonInputComponent } from '../../shared/components/common-input/common-input.component';
 import { getLeaveRequestEmployeeLabel, LeaveRequest } from '../../core/models/leave.model';
 import { ContextStore } from '../../store/context.store';
 

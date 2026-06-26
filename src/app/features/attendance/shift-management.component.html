@@ -23,14 +23,12 @@
             </app-common-input>
 
             <div class="grid grid-cols-2 gap-4">
-                <app-common-datepicker label="Start Time (24h)" formControlName="startTime" placeholder="09:00"
-                    [timeOnly]="true" hourFormat="24"
+                <app-common-time-picker label="Start Time (24h)" formControlName="startTime" placeholder="09:00"
                     [error]="shiftForm.get('startTime')?.touched && shiftForm.get('startTime')?.invalid ? 'Required' : null">
-                </app-common-datepicker>
-                <app-common-datepicker label="End Time (24h)" formControlName="endTime" placeholder="18:00"
-                    [timeOnly]="true" hourFormat="24"
+                </app-common-time-picker>
+                <app-common-time-picker label="End Time (24h)" formControlName="endTime" placeholder="18:00"
                     [error]="shiftForm.get('endTime')?.touched && shiftForm.get('endTime')?.invalid ? 'Required' : null">
-                </app-common-datepicker>
+                </app-common-time-picker>
             </div>
 
             <app-common-input label="Grace Period (Minutes)" formControlName="graceMinutes" type="number"
@@ -57,8 +55,8 @@
                 placeholder="Choose shift">
             </app-common-select>
 
-            <app-common-datepicker label="Effective From" formControlName="effectiveFrom">
-            </app-common-datepicker>
+            <app-common-date-picker label="Effective From" formControlName="effectiveFrom">
+            </app-common-date-picker>
 
             <div class="flex justify-end gap-3 mt-6">
                 <app-button label="Cancel" variant="secondary" (onClick)="showAssignShift = false"></app-button>

@@ -7,9 +7,9 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { EmployeeStore } from '../../store/employee.store';
 import { DepartmentStore } from '../../store/department.store';
-import { CommonInputComponent } from '../../shared/components/common-input.component';
-import { CommonSelectComponent } from '../../shared/components/common-select.component';
-import { CommonDatepickerComponent } from '../../shared/components/common-datepicker.component';
+import { CommonInputComponent } from '../../shared/components/common-input/common-input.component';
+import { CommonSelectComponent } from '../../shared/components/common-select/common-select.component';
+import { CommonDatePickerComponent } from '../../shared/components/datepicker/common-date-picker/common-date-picker.component';
 import { LocationStore } from '../../store/location.store';
 import { TeamStore } from '../../store/team.store';
 import {
@@ -34,7 +34,7 @@ import {
     CardModule,
     CommonInputComponent,
     CommonSelectComponent,
-    CommonDatepickerComponent,
+    CommonDatePickerComponent,
   ],
   templateUrl: './onboarding.component.html',
 })

@@ -3,11 +3,11 @@ import { CommonModule } from '@angular/common';
 import { AttendanceStore } from '../../store/attendance.store';
 import { AuthService } from '../../core/services/auth.service';
 import { ShiftManagementComponent } from './shift-management.component';
-import { CommonTableComponent, Column } from '../../shared/components/common-table.component';
-import { CommonButtonComponent } from '../../shared/components/common-button.component';
-import { CommonInputComponent } from '../../shared/components/common-input.component';
-import { CommonSelectComponent } from '../../shared/components/common-select.component';
-import { CommonDatepickerComponent } from '../../shared/components/common-datepicker.component';
+import { CommonTableComponent, Column } from '../../shared/components/common-table/common-table.component';
+import { CommonButtonComponent } from '../../shared/components/common-button.component/common-button.component';
+import { CommonInputComponent } from '../../shared/components/common-input/common-input.component';
+import { CommonSelectComponent } from '../../shared/components/common-select/common-select.component';
+import { CommonRangePickerComponent } from '../../shared/components/datepicker/common-range-picker/common-range-picker.component';
 import { CardModule } from 'primeng/card';
 import { FormsModule } from '@angular/forms';
 import { PopoverModule } from 'primeng/popover';
@@ -26,7 +26,7 @@ import { ButtonModule } from 'primeng/button';
         CommonButtonComponent,
         CommonInputComponent,
         CommonSelectComponent,
-        CommonDatepickerComponent,
+        CommonRangePickerComponent,
         ShiftManagementComponent,
     ],
     templateUrl: './attendance.component.html'

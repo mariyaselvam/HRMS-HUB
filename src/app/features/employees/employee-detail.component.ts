@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { EmployeeStore } from '../../store/employee.store';
 import { Employee } from '../../core/models/employee.model';
 import { CardModule } from 'primeng/card';
-import { CommonButtonComponent } from '../../shared/components/common-button.component';
+import { CommonButtonComponent } from '../../shared/components/common-button.component/common-button.component';
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from 'primeng/tabs';
 
 @Component({

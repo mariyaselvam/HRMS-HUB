@@ -1,13 +1,13 @@
 import { Component, inject, effect, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EmployeeStore } from '../../store/employee.store';
-import { CommonTableComponent, Column } from '../../shared/components/common-table.component';
-import { CommonButtonComponent } from '../../shared/components/common-button.component';
+import { CommonTableComponent, Column } from '../../shared/components/common-table/common-table.component';
+import { CommonButtonComponent } from '../../shared/components/common-button.component/common-button.component';
 import { CardModule } from 'primeng/card';
 import { FormsModule } from '@angular/forms';
 import { PopoverModule } from 'primeng/popover';
-import { CommonInputComponent } from '../../shared/components/common-input.component';
-import { CommonSelectComponent } from '../../shared/components/common-select.component';
+import { CommonInputComponent } from '../../shared/components/common-input/common-input.component';
+import { CommonSelectComponent } from '../../shared/components/common-select/common-select.component';
 import { ButtonModule } from 'primeng/button';
 import { Employee } from '../../core/models/employee.model';
 import { NotificationService } from '../../core/services/notification.service';
