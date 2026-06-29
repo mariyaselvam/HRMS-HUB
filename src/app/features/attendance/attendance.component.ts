@@ -1,8 +1,6 @@
 import { Component, inject, OnInit, OnDestroy, signal, effect, computed, untracked } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AttendanceStore } from '../../store/attendance.store';
-import { AuthService } from '../../core/services/auth.service';
-import { ShiftManagementComponent } from './shift-management.component';
 import { CommonTableComponent, Column } from '../../shared/components/common-table/common-table.component';
 import { CommonButtonComponent } from '../../shared/components/common-button.component/common-button.component';
 import { CommonInputComponent } from '../../shared/components/common-input/common-input.component';
@@ -11,7 +9,6 @@ import { CommonRangePickerComponent } from '../../shared/components/datepicker/c
 import { CardModule } from 'primeng/card';
 import { FormsModule } from '@angular/forms';
 import { PopoverModule } from 'primeng/popover';
-import { ButtonModule } from 'primeng/button';
 
 @Component({
     selector: 'app-attendance',
@@ -21,20 +18,15 @@ import { ButtonModule } from 'primeng/button';
         FormsModule,
         CardModule,
         PopoverModule,
-        ButtonModule,
         CommonTableComponent,
         CommonButtonComponent,
-        CommonInputComponent,
         CommonSelectComponent,
         CommonRangePickerComponent,
-        ShiftManagementComponent,
     ],
     templateUrl: './attendance.component.html'
 })
 export class AttendanceComponent implements OnInit, OnDestroy {
     protected store = inject(AttendanceStore);
-    protected auth = inject(AuthService);
-    view = signal<'logs' | 'shifts' | 'all-logs'>('logs');
 
     // Filters
     search = signal('');
@@ -49,24 +41,6 @@ export class AttendanceComponent implements OnInit, OnDestroy {
         return count;
     });
 
-    viewTitle = computed(() => {
-        switch (this.view()) {
-            case 'logs': return 'My Attendance';
-            case 'all-logs': return 'Employee Attendance';
-            case 'shifts': return 'Shift Management';
-            default: return 'Attendance';
-        }
-    });
-
-    viewSubtitle = computed(() => {
-        switch (this.view()) {
-            case 'logs': return 'Track your check-ins and work hours';
-            case 'all-logs': return 'Monitor company-wide attendance logs';
-            case 'shifts': return 'Configure and assign employee shifts';
-            default: return 'Manage workforce presence effectively';
-        }
-    });
-
     statusOptions = [
         { label: 'All Status', value: null },
         { label: 'Present', value: 'present' },
@@ -77,6 +51,16 @@ export class AttendanceComponent implements OnInit, OnDestroy {
 
     currentTime = new Date();
     private timer: any;
+
+    // Personal columns (no redundant Employee column!)
+    columns: Column[] = [
+        { field: 'shift.name', header: 'Shift' },
+        { field: 'attendanceDate', header: 'Date', type: 'date' },
+        { field: 'checkIn', header: 'Check In', type: 'time' },
+        { field: 'checkOut', header: 'Check Out', type: 'time' },
+        { field: 'totalHours', header: 'Hours', type: 'duration' },
+        { field: 'status', header: 'Status', type: 'status' }
+    ];
 
     private getFilters(page?: number) {
         const dates = this.dateRange();
@@ -91,37 +75,14 @@ export class AttendanceComponent implements OnInit, OnDestroy {
     }
 
     constructor() {
-        // Automatically reload logs when switching views or filters change
         effect(() => {
-            // Register dependencies
-            const currentView = this.view();
             this.search();
             this.status();
             this.dateRange();
-
-            // When filters change, always load from page 1
             const filters = untracked(() => this.getFilters(1));
-
-            if (currentView === 'logs') {
-                this.store.loadLogs(filters);
-            } else if (currentView === 'all-logs') {
-                this.store.loadAdminLogs(filters);
-            }
+            this.store.loadLogs(filters);
         });
     }
-
-    // ─── Table columns matching backend response fields ──────────────────────
-    // Backend returns: attendanceDate, checkIn, checkOut, totalHours, status
-    // Relations: employee.user.email, shift.name
-    columns: Column[] = [
-        { field: 'employee.user.email', header: 'Employee' },
-        { field: 'shift.name', header: 'Shift' },
-        { field: 'attendanceDate', header: 'Date', type: 'date' },
-        { field: 'checkIn', header: 'Check In', type: 'time' },
-        { field: 'checkOut', header: 'Check Out', type: 'time' },
-        { field: 'totalHours', header: 'Hours', type: 'duration' },
-        { field: 'status', header: 'Status', type: 'status' }
-    ];
 
     ngOnInit() {
         this.timer = setInterval(() => {
@@ -137,7 +98,6 @@ export class AttendanceComponent implements OnInit, OnDestroy {
         const page = (event.first / event.rows) + 1;
         const limit = event.rows;
 
-        // Skip duplicate call if already loading or if page/limit already match
         if (this.store.loading() || (this.store.page() === page && this.store.limit() === limit && this.store.logs().length > 0)) {
             return;
         }
@@ -148,19 +108,13 @@ export class AttendanceComponent implements OnInit, OnDestroy {
             limit
         };
 
-        if (this.view() === 'logs') {
-            this.store.loadLogs(filters);
-        } else if (this.view() === 'all-logs') {
-            this.store.loadAdminLogs(filters);
-        }
+        this.store.loadLogs(filters);
     }
 
-    // Flow 2: Check-in — sends { shiftId?, workLocationId?, note? }
     onCheckIn() {
         this.store.checkIn();
     }
 
-    // Flow 3: Check-out — sends only { note? }
     onCheckOut() {
         this.store.checkOut();
     }
@@ -180,7 +134,6 @@ export class AttendanceComponent implements OnInit, OnDestroy {
         if (!raw) return '—';
         const num = Number(raw);
         if (isNaN(num) || num === 0) return '0h 0m';
-        // If > 1000, treat as milliseconds; otherwise treat as decimal hours
         const totalMinutes = num > 1000
             ? Math.floor(num / 1000 / 60)
             : Math.floor(num * 60);

@@ -95,6 +95,20 @@ export const routes: Routes = [
         canActivate: [authGuard]
     },
     {
+        path: 'attendance-logs',
+        loadComponent: () => import('./features/attendance/employee-attendance.component').then(m => m.EmployeeAttendanceComponent),
+        canActivate: [authGuard, roleGuard([
+            SystemRole.SUPER_ADMIN, SystemRole.COMPANY_ADMIN, SystemRole.HR_MANAGER, SystemRole.BRANCH_MANAGER
+        ])]
+    },
+    {
+        path: 'shifts',
+        loadComponent: () => import('./features/attendance/shift-management.component').then(m => m.ShiftManagementComponent),
+        canActivate: [authGuard, roleGuard([
+            SystemRole.SUPER_ADMIN, SystemRole.COMPANY_ADMIN, SystemRole.HR_MANAGER
+        ])]
+    },
+    {
         path: 'payroll',
         loadComponent: () => import('./features/payroll/payroll.component').then(m => m.PayrollComponent),
         canActivate: [authGuard, roleGuard([

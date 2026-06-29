@@ -1,0 +1,84 @@
+<div class="space-y-8 pb-10">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 px-4 mb-2">
+        <div class="flex-1">
+            <h1 class="text-2xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight transition-all">
+                Employee Attendance Logs
+            </h1>
+            <p class="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">
+                Monitor company-wide presence and workforce attendance logs
+            </p>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <button (click)="op.toggle($event)"
+                class="flex items-center gap-2.5 px-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-xl shadow-sm hover:border-indigo-500 dark:hover:border-indigo-500/50 transition-all active:scale-95 group">
+                <i class="pi pi-filter text-slate-400 group-hover:text-indigo-500 transition-colors"></i>
+                <span class="text-sm font-semibold text-slate-700 dark:text-slate-300">Filters</span>
+                @if (activeFilterCount() > 0) {
+                <span
+                    class="flex items-center justify-center min-w-[20px] h-5 px-1.5 text-[10px] font-bold bg-indigo-600 text-white rounded-full">
+                    {{ activeFilterCount() }}
+                </span>
+                }
+            </button>
+
+            @if (activeFilterCount() > 0) {
+            <button (click)="search.set(''); status.set(null); dateRange.set(null)"
+                class="p-2.5 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-all"
+                title="Clear all filters">
+                <i class="pi pi-refresh text-sm"></i>
+            </button>
+            }
+        </div>
+    </div>
+
+    <div class="px-1 pt-2">
+        <p-card class="!shadow-none !border-slate-300 dark:!border-slate-800 !mt-2 !overflow-hidden">
+            <app-common-table [data]="store.logs()" [columns]="columns" [lazy]="true" [totalRecords]="store.totalLogs()"
+                [rows]="store.limit()" [loading]="store.loading()" (onLazyLoad)="onLazyLoad($event)">
+            </app-common-table>
+        </p-card>
+    </div>
+
+    <!-- Filter Popover -->
+    <p-popover #op appendTo="body"
+        class="!rounded-2xl !shadow-2xl !border-slate-300 dark:!border-slate-800 !p-0 !overflow-hidden !mt-2">
+        <div class="w-[340px] md:w-[420px] bg-white dark:bg-slate-950">
+            <div
+                class="p-4 bg-slate-50/80 dark:bg-slate-900/50 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <i class="pi pi-sliders-h text-indigo-500"></i>
+                    <span class="font-bold text-sm text-slate-800 dark:text-slate-200">Refine Search</span>
+                </div>
+                <button (click)="search.set(''); status.set(null); dateRange.set(null)"
+                    class="text-[10px] font-bold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 uppercase tracking-widest px-2 py-1 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 rounded-lg transition-all">
+                    Reset
+                </button>
+            </div>
+
+            <div class="p-6 flex flex-col gap-6">
+                <app-common-input label="Employee Search" [ngModel]="search()" (ngModelChange)="search.set($event)"
+                    placeholder="Name, Email or Code..." icon="pi pi-search">
+                </app-common-input>
+
+                <app-common-select label="Current Status" [options]="statusOptions" [ngModel]="status()"
+                    (ngModelChange)="status.set($event)" placeholder="All Records" appendTo="body">
+                </app-common-select>
+
+                <app-common-range-picker label="Time Period" [ngModel]="dateRange()"
+                    (ngModelChange)="dateRange.set($event)"
+                    placeholder="Select start and end date..." appendTo="body">
+                </app-common-range-picker>
+            </div>
+
+            <div
+                class="p-4 bg-slate-50 dark:bg-slate-900/80 border-t border-slate-100 dark:border-slate-800 text-center">
+                <div
+                    class="inline-flex items-center gap-2 px-3 py-1.5 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-full">
+                    <i class="pi pi-info-circle text-[10px]"></i>
+                    <span class="text-[10px] font-semibold">Filters apply in real-time</span>
+                </div>
+            </div>
+        </div>
+    </p-popover>
+</div>

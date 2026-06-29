@@ -69,7 +69,28 @@ export const SIDEBAR_NAV_ITEMS: SidebarNavItem[] = [
   },
 
   // Attendance
-  { label: 'Attendance', icon: 'pi pi-calendar', route: '/attendance' },
+  { label: 'My Attendance', icon: 'pi pi-calendar', route: '/attendance' },
+  {
+    label: 'Attendance Logs',
+    icon: 'pi pi-list-check',
+    route: '/attendance-logs',
+    roles: [
+      SystemRole.SUPER_ADMIN,
+      SystemRole.COMPANY_ADMIN,
+      SystemRole.HR_MANAGER,
+      SystemRole.BRANCH_MANAGER,
+    ],
+  },
+  {
+    label: 'Shift Management',
+    icon: 'pi pi-clock',
+    route: '/shifts',
+    roles: [
+      SystemRole.SUPER_ADMIN,
+      SystemRole.COMPANY_ADMIN,
+      SystemRole.HR_MANAGER,
+    ],
+  },
 
   // Payroll (Admin, HR, Payroll Manager)
   {

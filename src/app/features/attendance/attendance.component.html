@@ -2,37 +2,37 @@
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 px-4 mb-2">
         <div class="flex-1">
             <h1 class="text-2xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight transition-all">
-                {{ viewTitle() }}
+                My Attendance
             </h1>
             <p class="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">
-                {{ viewSubtitle() }}
+                Track your check-ins and personal work hours
             </p>
         </div>
 
-        <div
-            class="flex bg-slate-100/80 dark:bg-slate-800/50 p-1.5 rounded-2xl shadow-inner backdrop-blur-sm self-end md:self-auto">
-            <button (click)="view.set('logs')"
-                [ngClass]="view() === 'logs' ? 'bg-white dark:bg-slate-700 shadow-md text-indigo-600' : 'text-slate-500 hover:text-slate-700'"
-                class="px-6 py-2 rounded-xl text-sm font-bold transition-all duration-300">
-                My Attendance
+        <div class="flex items-center gap-3">
+            <button (click)="op.toggle($event)"
+                class="flex items-center gap-2.5 px-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-xl shadow-sm hover:border-indigo-500 dark:hover:border-indigo-500/50 transition-all active:scale-95 group">
+                <i class="pi pi-filter text-slate-400 group-hover:text-indigo-500 transition-colors"></i>
+                <span class="text-sm font-semibold text-slate-700 dark:text-slate-300">Filters</span>
+                @if (activeFilterCount() > 0) {
+                <span
+                    class="flex items-center justify-center min-w-[20px] h-5 px-1.5 text-[10px] font-bold bg-indigo-600 text-white rounded-full">
+                    {{ activeFilterCount() }}
+                </span>
+                }
             </button>
-            @if (auth.hasRole('Admin', 'Manager')) {
-            <button (click)="view.set('all-logs')"
-                [ngClass]="view() === 'all-logs' ? 'bg-white dark:bg-slate-700 shadow-md text-indigo-600' : 'text-slate-500 hover:text-slate-700'"
-                class="px-6 py-2 rounded-xl text-sm font-bold transition-all duration-300 ml-1.5">
-                All Logs
+
+            @if (activeFilterCount() > 0) {
+            <button (click)="search.set(''); status.set(null); dateRange.set(null)"
+                class="p-2.5 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-all"
+                title="Clear all filters">
+                <i class="pi pi-refresh text-sm"></i>
             </button>
             }
-            <button (click)="view.set('shifts')"
-                [ngClass]="view() === 'shifts' ? 'bg-white dark:bg-slate-700 shadow-md text-indigo-600' : 'text-slate-500 hover:text-slate-700'"
-                class="px-6 py-2 rounded-xl text-sm font-bold transition-all duration-300 ml-1.5">
-                Shift Management
-            </button>
         </div>
     </div>
 
-    <div class="px-1 pt-2">
-        @if (view() === 'logs') {
+    <div class="px-1 pt-2 space-y-6">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Check In/Out Widget -->
             <p-card
@@ -123,7 +123,7 @@
                             <i class="pi pi-calendar-plus text-xl"></i>
                         </div>
                         <div>
-                            <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Total Logs This View</p>
+                            <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Logs Recorded</p>
                             <p class="text-2xl font-bold text-slate-900 dark:text-slate-100">{{ store.logs().length }}
                             </p>
                         </div>
@@ -145,48 +145,16 @@
                 </p-card>
             </div>
         </div>
-        }
-
-        @if (view() === 'logs' || view() === 'all-logs') {
-        <!-- Attendance Filter Toggle Action -->
-        <div class="flex justify-end mb-4 px-1">
-            <div class="flex items-center gap-3">
-                <!-- Filter Trigger Button -->
-                <button (click)="op.toggle($event)"
-                    class="flex items-center gap-2.5 px-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-xl shadow-sm hover:border-indigo-500 dark:hover:border-indigo-500/50 transition-all active:scale-95 group">
-                    <i class="pi pi-filter text-slate-400 group-hover:text-indigo-500 transition-colors"></i>
-                    <span class="text-sm font-semibold text-slate-700 dark:text-slate-300">Filters</span>
-                    @if (activeFilterCount() > 0) {
-                    <span
-                        class="flex items-center justify-center min-w-[20px] h-5 px-1.5 text-[10px] font-bold bg-indigo-600 text-white rounded-full">
-                        {{ activeFilterCount() }}
-                    </span>
-                    }
-                </button>
-
-                <!-- Reset All (Quick Action) -->
-                @if (activeFilterCount() > 0) {
-                <button (click)="search.set(''); status.set(null); dateRange.set(null)"
-                    class="p-2.5 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-all"
-                    title="Clear all filters">
-                    <i class="pi pi-refresh text-sm"></i>
-                </button>
-                }
-            </div>
-        </div>
 
         <!-- Attendance History Table -->
         <p-card class="!shadow-none !border-slate-300 dark:!border-slate-800 !mt-2 !overflow-hidden">
             <app-common-table [data]="store.logs()" [columns]="columns" [lazy]="true" [totalRecords]="store.totalLogs()"
-                [rows]="store.limit()" (onLazyLoad)="onLazyLoad($event)">
+                [rows]="store.limit()" [loading]="store.loading()" (onLazyLoad)="onLazyLoad($event)">
             </app-common-table>
         </p-card>
-        } @else if (view() === 'shifts') {
-        <app-shift-management></app-shift-management>
-        }
     </div>
 
-    <!-- The Filter Popover (Placed at bottom to prevent destruction/NG0100 errors) -->
+    <!-- Filter Popover -->
     <p-popover #op appendTo="body"
         class="!rounded-2xl !shadow-2xl !border-slate-300 dark:!border-slate-800 !p-0 !overflow-hidden !mt-2">
         <div class="w-[340px] md:w-[420px] bg-white dark:bg-slate-950">
@@ -203,18 +171,11 @@
             </div>
 
             <div class="p-6 flex flex-col gap-6">
-                <!-- Search -->
-                <app-common-input label="Employee Search" [(ngModel)]="search" (ngModelChange)="search.set($event)"
-                    placeholder="Name, Email or Code..." icon="pi pi-search">
-                </app-common-input>
-
-                <!-- Status Filter -->
-                <app-common-select label="Current Status" [options]="statusOptions" [(ngModel)]="status"
+                <app-common-select label="Current Status" [options]="statusOptions" [ngModel]="status()"
                     (ngModelChange)="status.set($event)" placeholder="All Records" appendTo="body">
                 </app-common-select>
 
-                <!-- Date Range -->
-                <app-common-range-picker label="Time Period" [(ngModel)]="dateRange"
+                <app-common-range-picker label="Time Period" [ngModel]="dateRange()"
                     (ngModelChange)="dateRange.set($event)"
                     placeholder="Select start and end date..." appendTo="body">
                 </app-common-range-picker>
