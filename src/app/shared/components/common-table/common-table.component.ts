@@ -109,6 +109,17 @@ export class CommonTableComponent {
     }
 
     /**
+     * Extracts HH:mm from an ISO datetime string (e.g. "1970-01-01T09:00:00.000Z" -> "09:00")
+     * without any timezone conversion, since these are time-only values.
+     */
+    formatTime(value: any): string {
+        if (!value) return '';
+        // value is like "1970-01-01T09:00:00.000Z" — extract the time part after 'T'
+        const timePart = String(value).split('T')[1] || '';
+        return timePart.split(':').slice(0, 2).join(':');
+    }
+
+    /**
      * Converts a raw duration value to human-readable "Xhr Ym" format.
      * Handles milliseconds (if value > 1000) OR decimal hours (if value <= 24).
      */

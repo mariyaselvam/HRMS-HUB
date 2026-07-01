@@ -53,8 +53,8 @@ export class ShiftManagementComponent implements OnInit {
 
     columns: Column[] = [
         { field: 'name', header: 'Shift Name' },
-        { field: 'startTime', header: 'Start Time', type: 'text' },
-        { field: 'endTime', header: 'End Time', type: 'text' },
+        { field: 'startTime', header: 'Start Time', type: 'time' },
+        { field: 'endTime', header: 'End Time', type: 'time' },
         { field: 'graceMinutes', header: 'Grace (Mins)' },
         { field: 'createdAt', header: 'Created', type: 'date' }
     ];

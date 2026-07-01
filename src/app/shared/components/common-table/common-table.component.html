@@ -64,7 +64,7 @@
           } @else if (col.type === 'datetime') {
             {{ resolveFieldValue(rowData, col.field) | date: 'medium' }}
           } @else if (col.type === 'time') {
-            {{ resolveFieldValue(rowData, col.field) | date: 'shortTime' }}
+            {{ formatTime(resolveFieldValue(rowData, col.field)) }}
           } @else if (col.type === 'duration') {
             {{ formatDuration(resolveFieldValue(rowData, col.field)) }}
           } @else if (col.type === 'number') {
