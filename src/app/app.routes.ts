@@ -103,7 +103,7 @@ export const routes: Routes = [
     },
     {
         path: 'shifts',
-        loadComponent: () => import('./features/attendance/shift-management.component').then(m => m.ShiftManagementComponent),
+        loadComponent: () => import('./features/shifts/shift-list.component').then(m => m.ShiftListComponent),
         canActivate: [authGuard, roleGuard([
             SystemRole.SUPER_ADMIN, SystemRole.COMPANY_ADMIN, SystemRole.HR_MANAGER
         ])]

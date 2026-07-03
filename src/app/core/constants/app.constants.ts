@@ -1,6 +1,6 @@
 export const APP_CONFIG = {
-  API_BASE_URL: 'https://hrms-be-7ll7.onrender.com/api/v1',
-  // API_BASE_URL: 'http://localhost:3000/api/v1', 
+  // API_BASE_URL: 'https://hrms-be-7ll7.onrender.com/api/v1',
+  API_BASE_URL: 'http://localhost:3000/api/v1', 
   PAGE_SIZE: 10,
   DATE_FORMAT: 'dd/MM/yyyy',
 };
@@ -16,6 +16,11 @@ export const API_ENDPOINTS = {
   EMPLOYEE_FINALIZE: (id: string) => `/employees/${id}/finalize`,
   ATTENDANCE: '/attendance',
   ATTENDANCE_ADMIN_LOGS: '/attendance/admin/logs',
+  SHIFTS: '/shifts',
+  SHIFT_ASSIGN: '/shifts/assign',
+  SHIFT_REMOVE: '/shifts/remove',
+  SHIFT_TRANSFER: '/shifts/transfer',
+  SHIFT_EMPLOYEES: (shiftId: string) => `/shifts/${shiftId}/employees`,
   PAYROLL: '/payroll',
   PAYROLL_RECORDS: '/payroll/records',
   PAYROLL_RECORD_DOWNLOAD: (id: string) => `/payroll/records/${id}/download`,
