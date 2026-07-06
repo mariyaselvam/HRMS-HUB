@@ -1,6 +1,6 @@
 export const APP_CONFIG = {
-  // API_BASE_URL: 'https://hrms-be-7ll7.onrender.com/api/v1',
-  API_BASE_URL: 'http://localhost:3000/api/v1', 
+  API_BASE_URL: 'https://hrms-be-7ll7.onrender.com/api/v1',
+  // API_BASE_URL: 'http://localhost:3000/api/v1',
   PAGE_SIZE: 10,
   DATE_FORMAT: 'dd/MM/yyyy',
 };
