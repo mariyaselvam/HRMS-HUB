@@ -47,4 +47,31 @@
         @apply py-4 px-6 border-b border-slate-100 dark:border-slate-800 text-sm text-slate-600 dark:text-slate-300 !important;
         white-space: nowrap !important;
     }
+
+    /* Skeleton shimmer in loading rows */
+    .p-skeleton {
+        @apply !bg-slate-200 dark:!bg-slate-700/60 !important;
+        background-image: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.25) 50%,
+            transparent 100%
+        ) !important;
+        background-size: 200% 100% !important;
+        animation: skeleton-shimmer 1.5s infinite !important;
+    }
+
+    @keyframes skeleton-shimmer {
+        0%   { background-position: -200% 0; }
+        100% { background-position:  200% 0; }
+    }
+
+    .dark .p-skeleton {
+        background-image: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.06) 50%,
+            transparent 100%
+        ) !important;
+    }
 }

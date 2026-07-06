@@ -7,7 +7,7 @@
     </div>
 
     <p-card class="!shadow-sm !border-slate-300">
-        <app-common-table [data]="tableData()" [columns]="columns" [hasActions]="true"
+        <app-common-table [data]="tableData()" [columns]="columns" [hasActions]="true" [loading]="store.loading()"
             (edit)="openReviewDialog($event)">
         </app-common-table>
     </p-card>

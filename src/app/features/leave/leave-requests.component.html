@@ -9,7 +9,7 @@
     </div>
 
     <p-card class="!shadow-sm !border-slate-300">
-        <app-common-table [data]="store.myRequests()" [columns]="columns">
+        <app-common-table [data]="store.myRequests()" [columns]="columns" [loading]="store.loading()">
         </app-common-table>
     </p-card>
 </div>

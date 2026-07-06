@@ -45,6 +45,7 @@
 
         <p-card class="!shadow-none !border-slate-300 dark:!border-slate-800 !mt-2 !overflow-hidden">
             <app-common-table [data]="filteredEmployees()" [columns]="columns" [hasActions]="true" [showView]="true"
+                [loading]="store.loading()"
                 (view)="onView($event)" (edit)="onEdit($event)" (delete)="onDelete($event)">
             </app-common-table>
         </p-card>

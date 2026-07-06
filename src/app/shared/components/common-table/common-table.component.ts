@@ -1,9 +1,10 @@
-import { Component, input, output } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { MenuModule } from 'primeng/menu';
+import { SkeletonModule } from 'primeng/skeleton';
 import { MenuItem } from 'primeng/api';
 
 export interface Column {
@@ -15,7 +16,7 @@ export interface Column {
 @Component({
     selector: 'app-common-table',
     standalone: true,
-    imports: [CommonModule, TableModule, ButtonModule, InputTextModule, MenuModule],
+    imports: [CommonModule, TableModule, ButtonModule, InputTextModule, MenuModule, SkeletonModule],
     templateUrl: './common-table.component.html',
     styleUrl: './common-table.component.css'
 })
@@ -39,6 +40,17 @@ export class CommonTableComponent {
     onLazyLoad = output<any>();
 
     menuItems: MenuItem[] = [];
+
+    /** Placeholder objects used as rows while loading */
+    readonly skeletonPlaceholders = computed(() =>
+        Array.from({ length: this.rows() }, () => ({}))
+    );
+
+    /** Always has rows so p-table never falls into emptymessage during load */
+    readonly tableData = computed(() =>
+        this.loading() ? this.skeletonPlaceholders() : this.data()
+    );
+
 
     resolveFieldValue(rowData: any, field: string): any {
         if (!field) return '';

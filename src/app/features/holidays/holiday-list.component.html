@@ -9,7 +9,7 @@
 
     <p-card class="!shadow-sm !border-slate-300">
         <app-common-table [data]="store.holidays()" [columns]="columns" [hasActions]="true" [showEdit]="false"
-            (delete)="onDelete($event)">
+            [loading]="store.loading()" (delete)="onDelete($event)">
         </app-common-table>
     </p-card>
 </div>

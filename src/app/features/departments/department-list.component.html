@@ -8,8 +8,8 @@
     </div>
 
     <p-card class="!shadow-sm !border-slate-300">
-        <app-common-table [data]="store.departments()" [columns]="columns" [hasActions]="true" (edit)="onEdit($event)"
-            (delete)="onDelete($event)">
+        <app-common-table [data]="store.departments()" [columns]="columns" [hasActions]="true" [loading]="store.loading()"
+            (edit)="onEdit($event)" (delete)="onDelete($event)">
         </app-common-table>
     </p-card>
 </div>

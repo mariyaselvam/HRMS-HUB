@@ -8,7 +8,7 @@
     </div>
 
     <p-card class="!shadow-sm !border-slate-300">
-        <app-common-table [data]="store.leaveTypes()" [columns]="columns">
+        <app-common-table [data]="store.leaveTypes()" [columns]="columns" [loading]="store.loading()">
         </app-common-table>
     </p-card>
 </div>
