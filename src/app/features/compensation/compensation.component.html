@@ -1,0 +1,194 @@
+<div class="p-6 max-w-7xl mx-auto space-y-6">
+  <!-- Page Header -->
+  <div class="flex justify-between items-center bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-100 dark:border-slate-800/50 shadow-sm">
+    <div>
+      <h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Compensation Cycles & Revisions</h1>
+      <p class="text-sm text-slate-500 mt-1">Manage bulk salary revisions, increments, promotions, and payroll adjustments.</p>
+    </div>
+    <div class="flex gap-3">
+      <app-button
+        label="New Cycle"
+        icon="pi pi-plus"
+        (click)="showCreateDialog.set(true)"
+      ></app-button>
+      <app-button
+        *ngIf="selectedCycleId()"
+        label="Bulk Increase"
+        icon="pi pi-percentage"
+        (click)="showBulkDialog.set(true)"
+        [disabled]="activeCycle()?.status === 'applied'"
+      ></app-button>
+      <app-button
+        *ngIf="selectedCycleId()"
+        label="Approve & Apply Revisions"
+        icon="pi pi-check"
+        severity="success"
+        [disabled]="activeCycle()?.status === 'applied' || (revisions().length || 0) === 0"
+        (click)="onApplyCycle()"
+      ></app-button>
+    </div>
+  </div>
+
+  <!-- Selection Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <p-card styleClass="!shadow-sm !border-slate-200 dark:!border-slate-800">
+      <div class="space-y-4">
+        <h3 class="font-semibold text-slate-700 dark:text-slate-300">Select Campaign Cycle</h3>
+        <p-select
+          [options]="cycles()"
+          optionLabel="name"
+          optionValue="id"
+          [(ngModel)]="selectedCycleId"
+          (onChange)="onCycleChange()"
+          placeholder="Choose a Cycle"
+          styleClass="w-full"
+        ></p-select>
+
+        <div *ngIf="activeCycle()" class="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2 text-xs">
+          <div class="flex justify-between">
+            <span class="text-slate-500">Effective Date:</span>
+            <span class="font-medium text-slate-800 dark:text-slate-200">{{ activeCycle()?.effectiveFrom | date }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-500">Status:</span>
+            <span class="font-semibold" [ngClass]="{
+              'text-emerald-600': activeCycle()?.status === 'applied',
+              'text-amber-600': activeCycle()?.status === 'draft'
+            }">{{ activeCycle()?.status | uppercase }}</span>
+          </div>
+        </div>
+      </div>
+    </p-card>
+
+    <!-- Stats Panel -->
+    <p-card styleClass="!shadow-sm !border-slate-200 dark:!border-slate-800 col-span-2">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <div class="space-y-1">
+          <span class="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Revised Employees</span>
+          <div class="text-2xl font-bold text-slate-900 dark:text-white">{{ revisions().length }}</div>
+        </div>
+        <div class="space-y-1">
+          <span class="text-xs font-medium text-slate-500 uppercase tracking-wider">Average Proposed Hike</span>
+          <div class="text-2xl font-bold text-emerald-600">{{ avgHike() | percent:'1.1-1' }}</div>
+        </div>
+        <div class="space-y-1">
+          <span class="text-xs font-medium text-slate-500 uppercase tracking-wider">Monthly Cost Impact</span>
+          <div class="text-2xl font-bold text-rose-600">+ ₹{{ monthlyCostImpact() | number:'1.0-0' }}</div>
+        </div>
+      </div>
+    </p-card>
+  </div>
+
+  <!-- Revisions Table -->
+  <p-card *ngIf="selectedCycleId()" styleClass="!shadow-none !border-slate-200 dark:!border-slate-800">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-lg font-bold text-slate-900 dark:text-white">Proposed Revisions Sheet</h2>
+      <div class="text-xs text-slate-500 italic" *ngIf="activeCycle()?.status === 'applied'">
+        * This cycle is finalized and applied to employee salary structures.
+      </div>
+    </div>
+    
+    <app-common-table
+      [data]="processedRevisions()"
+      [columns]="tableColumns"
+      [loading]="loading()"
+    ></app-common-table>
+  </p-card>
+
+  <!-- Create Cycle Dialog -->
+  <p-dialog
+    [(visible)]="showCreateDialog"
+    header="Create Compensation Revision Cycle"
+    [modal]="true"
+    [style]="{ width: '450px' }"
+  >
+    <div class="space-y-4 pt-3">
+      <div class="flex flex-col gap-1.5">
+        <label class="text-xs font-semibold text-slate-500 uppercase">Cycle/Campaign Name</label>
+        <input
+          type="text"
+          pInputText
+          [(ngModel)]="newCycleName"
+          placeholder="e.g. FY2027 Annual Increment"
+          class="w-full"
+        />
+      </div>
+      <div class="w-full">
+        <app-common-date-picker
+          label="Effective From"
+          [(ngModel)]="newCycleEffectiveFrom"
+        ></app-common-date-picker>
+      </div>
+      <div class="flex justify-end gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
+        <button
+          pButton
+          label="Cancel"
+          class="p-button-text p-button-secondary"
+          (click)="showCreateDialog.set(false)"
+        ></button>
+        <app-button
+          label="Create Cycle"
+          (click)="onCreateCycle()"
+          [disabled]="!newCycleName() || !newCycleEffectiveFrom()"
+        ></app-button>
+      </div>
+    </div>
+  </p-dialog>
+
+  <!-- Bulk Hike Dialog -->
+  <p-dialog
+    [(visible)]="showBulkDialog"
+    header="Apply Bulk Salary Revision Rule"
+    [modal]="true"
+    [style]="{ width: '450px' }"
+  >
+    <div class="space-y-4 pt-3">
+      <div class="flex flex-col gap-1.5">
+        <label class="text-xs font-semibold text-slate-500 uppercase">Target Department</label>
+        <p-select
+          [options]="departments()"
+          optionLabel="name"
+          optionValue="id"
+          [(ngModel)]="bulkDepartmentId"
+          placeholder="All Departments"
+          [showClear]="true"
+          styleClass="w-full"
+        ></p-select>
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <label class="text-xs font-semibold text-slate-500 uppercase">Adjustment Type</label>
+        <p-select
+          [options]="[{ label: 'Percentage Increase (%)', value: 'percentage' }, { label: 'Fixed Amount (₹)', value: 'fixed' }]"
+          optionLabel="label"
+          optionValue="value"
+          [(ngModel)]="bulkAdjustmentType"
+          styleClass="w-full"
+        ></p-select>
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <label class="text-xs font-semibold text-slate-500 uppercase">Hike Value</label>
+        <input
+          type="number"
+          pInputText
+          [(ngModel)]="bulkValue"
+          placeholder="e.g. 8 for percentage, 5000 for fixed"
+          class="w-full"
+        />
+      </div>
+      <div class="flex justify-end gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
+        <button
+          pButton
+          label="Cancel"
+          class="p-button-text p-button-secondary"
+          (click)="showBulkDialog.set(false)"
+        ></button>
+        <app-button
+          label="Calculate Revisions"
+          (click)="onApplyBulkUpdate()"
+          [disabled]="!bulkValue()"
+        ></app-button>
+      </div>
+    </div>
+  </p-dialog>
+</div>
+

@@ -116,6 +116,13 @@ export const routes: Routes = [
         ])]
     },
     {
+        path: 'payroll/revisions',
+        loadComponent: () => import('./features/compensation/compensation.component').then(m => m.CompensationComponent),
+        canActivate: [authGuard, roleGuard([
+            SystemRole.SUPER_ADMIN, SystemRole.COMPANY_ADMIN, SystemRole.HR_MANAGER, SystemRole.PAYROLL_MANAGER
+        ])]
+    },
+    {
         path: 'settings',
         loadChildren: () => import('./features/settings/settings.routes').then(m => m.SETTINGS_ROUTES),
         canActivate: [authGuard, roleGuard([

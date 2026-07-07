@@ -104,6 +104,17 @@ export const SIDEBAR_NAV_ITEMS: SidebarNavItem[] = [
       SystemRole.PAYROLL_MANAGER,
     ],
   },
+  {
+    label: 'Salary Revisions',
+    icon: 'pi pi-percentage',
+    route: '/payroll/revisions',
+    roles: [
+      SystemRole.SUPER_ADMIN,
+      SystemRole.COMPANY_ADMIN,
+      SystemRole.HR_MANAGER,
+      SystemRole.PAYROLL_MANAGER,
+    ],
+  },
 
   // Settings
   {
