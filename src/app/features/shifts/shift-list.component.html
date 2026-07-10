@@ -1,147 +1,160 @@
-<div class="space-y-8 pb-10">
-  <div
-    class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 px-4 mb-2"
-  >
-    <div class="flex-1">
-      <h1
-        class="text-2xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight transition-all"
-      >
-        Shift Management
-      </h1>
-      <p class="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">
-        Configure work shifts, assign schedules, and manage employee shift assignments
-      </p>
-    </div>
-
-    <div class="flex gap-3">
-      <app-button
-        label="Transfer"
-        icon="pi pi-arrows-h"
-        variant="secondary"
-        (onClick)="showTransfer = true"
-        [disabled]="shifts().length < 2"
-      >
-      </app-button>
-      <app-button
-        label="Bulk Assign"
-        icon="pi pi-users"
-        variant="secondary"
-        (onClick)="showBulkAssign = true"
-      >
-      </app-button>
-      <app-button
-        label="Create Shift"
-        icon="pi pi-plus"
-        variant="primary"
-        (onClick)="openCreateDialog()"
-      >
-      </app-button>
-    </div>
-  </div>
-
-  <!-- Shifts Grid -->
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-    @for (shift of shifts(); track shift.id) {
-      <p-card
-        class="!shadow-sm !border-slate-300 dark:!border-slate-800 cursor-pointer hover:shadow-md transition-shadow"
-        (click)="selectShift(shift)"
-      >
-        <div class="flex items-start justify-between">
-          <div>
-            <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-200">
-              {{ shift.name }}
-            </h3>
-            <p class="text-sm text-slate-500 dark:text-slate-400">{{ shift.code }}</p>
-          </div>
-          <span
-            class="text-xs px-2 py-1 rounded-full"
-            [class.bg-green-100]="shift.status === 'active'"
-            [class.text-green-700]="shift.status === 'active'"
-            [class.bg-red-100]="shift.status !== 'active'"
-            [class.text-red-700]="shift.status !== 'active'"
-          >
-            {{ shift.status }}
-          </span>
-        </div>
-        <div class="mt-4 grid grid-cols-2 gap-3 text-sm">
-          <div>
-            <span class="text-slate-400">Start</span>
-            <p class="font-medium text-slate-700 dark:text-slate-300">{{ shift.startTime }}</p>
-          </div>
-          <div>
-            <span class="text-slate-400">End</span>
-            <p class="font-medium text-slate-700 dark:text-slate-300">{{ shift.endTime }}</p>
-          </div>
-          <div>
-            <span class="text-slate-400">Grace</span>
-            <p class="font-medium text-slate-700 dark:text-slate-300">
-              {{ shift.graceMinutes }} min
-            </p>
-          </div>
-          <div>
-            <span class="text-slate-400">Employees</span>
-            <p class="font-medium text-slate-700 dark:text-slate-300">
-              {{ shift.employeeCount || 0 }}
-            </p>
-          </div>
-        </div>
-        <div class="mt-3 flex gap-2 justify-end">
-          <app-button
-            label="Edit"
-            icon="pi pi-pencil"
-            variant="ghost"
-            size="sm"
-            (onClick)="$event.stopPropagation(); openEditDialog(shift)"
-          >
-          </app-button>
-        </div>
-      </p-card>
-    } @empty {
-      <div class="col-span-full text-center py-12 text-slate-400">
-        No shifts configured yet. Click "Create Shift" to get started.
-      </div>
-    }
-  </div>
-
-  <!-- Shift Detail & Employee List -->
-  @if (selectedShift()) {
-    <p-card class="!shadow-sm !border-slate-300 dark:!border-slate-800">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-xl font-bold text-slate-800 dark:text-slate-200">
-          {{ selectedShift()!.name }} — Employees ({{ totalShiftEmployees() }})
-        </h2>
-        <app-button label="Close" variant="ghost" (onClick)="deselectShift()"></app-button>
+<div class="space-y-6 pb-10">
+  <!-- State A: Shifts List Table View -->
+  @if (!selectedShift()) {
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 px-4 mb-2">
+      <div class="flex-1">
+        <h1 class="text-2xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight transition-all">
+          Shift Management
+        </h1>
+        <p class="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">
+          Configure work shifts, timings, grace periods, and manage employee allocations
+        </p>
       </div>
 
-      <!-- Search Filter -->
-      <div class="flex flex-wrap gap-3 mb-4">
-        <app-common-input
-          placeholder="Search employee..."
-          (input)="onSearch($event)"
-          class="w-64"
-        ></app-common-input>
-      </div>
-
-      <!-- Employees Table -->
-      <app-common-table [data]="shiftEmployees()" [columns]="employeeColumns" [loading]="loading()">
-      </app-common-table>
-
-      <!-- Bulk Remove Action -->
-      <div class="mt-4 flex gap-2">
+      <div class="flex gap-3">
         <app-button
-          label="Remove Selected"
-          icon="pi pi-minus"
-          variant="danger"
-          (onClick)="openRemoveDialog()"
+          label="Transfer Employees"
+          icon="pi pi-arrows-h"
+          variant="secondary"
+          (onClick)="showTransfer = true"
+          [disabled]="shifts().length < 2"
+        >
+        </app-button>
+        <app-button
+          label="Bulk Assign"
+          icon="pi pi-users"
+          variant="secondary"
+          (onClick)="showBulkAssign = true"
+        >
+        </app-button>
+        <app-button
+          label="Create Shift"
+          icon="pi pi-plus"
+          variant="primary"
+          (onClick)="openCreateDialog()"
+        >
+        </app-button>
+      </div>
+    </div>
+
+    <!-- Shifts List Table -->
+    <p-card class="!shadow-sm !border-slate-200 dark:!border-slate-800">
+      <app-common-table
+        [data]="processedShifts()"
+        [columns]="shiftColumns"
+        [loading]="loading()"
+        [hasActions]="true"
+        [showView]="true"
+        [showDelete]="false"
+        (view)="selectShift($event)"
+        (edit)="openEditDialog($event)"
+      ></app-common-table>
+    </p-card>
+  }
+
+  <!-- State B: Shift Assignment Details View -->
+  @else {
+    <div class="flex justify-between items-center px-4 mb-4">
+      <div class="flex items-center gap-3">
+        <app-button
+          icon="pi pi-arrow-left"
+          variant="ghost"
+          (onClick)="deselectShift()"
+          label="Back to Shifts"
+        ></app-button>
+        <h2 class="text-xl font-bold text-slate-800 dark:text-slate-200">
+          {{ selectedShift()!.name }} Shift
+        </h2>
+      </div>
+      <div class="flex gap-3">
+        <app-button
+          label="Assign Employees"
+          icon="pi pi-user-plus"
+          variant="primary"
+          (onClick)="showBulkAssign = true"
         ></app-button>
       </div>
-    </p-card>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 px-4">
+      <!-- Left Column: Shift Settings Summary -->
+      <div class="col-span-1 space-y-4">
+        <p-card styleClass="!shadow-sm !border-slate-200 dark:!border-slate-800">
+          <div class="flex justify-between items-center pb-3 border-b border-slate-100 dark:border-slate-800">
+            <div>
+              <h3 class="font-bold text-slate-900 dark:text-white text-base">{{ selectedShift()!.name }}</h3>
+              <p class="text-xs text-slate-500">Code: {{ selectedShift()!.code }}</p>
+            </div>
+            <span
+              class="text-xs px-2.5 py-1 rounded-full font-semibold uppercase tracking-wider"
+              [ngClass]="selectedShift()!.status === 'active' ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/20 dark:text-emerald-400' : 'bg-rose-50 text-rose-700 dark:bg-rose-950/20 dark:text-rose-400'"
+            >
+              {{ selectedShift()!.status }}
+            </span>
+          </div>
+
+          <div class="mt-4 space-y-3.5 text-sm">
+            <div class="flex justify-between">
+              <span class="text-slate-500">Start Time:</span>
+              <span class="font-semibold text-slate-800 dark:text-slate-200">{{ formatTime(selectedShift()!.startTime) }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-500">End Time:</span>
+              <span class="font-semibold text-slate-800 dark:text-slate-200">{{ formatTime(selectedShift()!.endTime) }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-500">Grace Period:</span>
+              <span class="font-semibold text-slate-800 dark:text-slate-200">{{ selectedShift()!.graceMinutes }} minutes</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-500">Break Duration:</span>
+              <span class="font-semibold text-slate-800 dark:text-slate-200">{{ selectedShift()!.breakDuration }} minutes</span>
+            </div>
+            <div class="flex justify-between pt-3 border-t border-slate-100 dark:border-slate-800">
+              <span class="text-slate-500">Assigned Total:</span>
+              <span class="font-bold text-indigo-600 dark:text-indigo-400 text-base">{{ totalShiftEmployees() }} Employees</span>
+            </div>
+          </div>
+        </p-card>
+      </div>
+
+      <!-- Right Column: Employee Table -->
+      <div class="col-span-1 lg:col-span-2">
+        <p-card styleClass="!shadow-sm !border-slate-200 dark:!border-slate-800">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+            <h3 class="font-bold text-slate-800 dark:text-white text-base">Assigned Employees List</h3>
+            <app-common-input
+              placeholder="Search employee..."
+              (input)="onSearch($event)"
+              class="w-64"
+            ></app-common-input>
+          </div>
+
+          <app-common-table
+            [data]="shiftEmployees()"
+            [columns]="employeeColumns"
+            [loading]="loading()"
+          ></app-common-table>
+
+          <!-- Bulk Remove -->
+          <div class="mt-4 flex gap-2">
+            <app-button
+              label="Remove Employees from Shift"
+              icon="pi pi-minus-circle"
+              variant="danger"
+              (onClick)="openRemoveDialog()"
+              [disabled]="(shiftEmployees() || []).length === 0"
+            ></app-button>
+          </div>
+        </p-card>
+      </div>
+    </div>
   }
 
   <!-- Create/Edit Shift Dialog -->
   <p-dialog
     [(visible)]="showCreateDialog"
-    [header]="editMode ? 'Edit Shift' : 'Create New Shift'"
+    [header]="editMode ? 'Edit Shift Settings' : 'Create New Shift'"
     [modal]="true"
     [style]="{ width: '500px' }"
     class="p-fluid"
@@ -152,45 +165,31 @@
           label="Shift Name"
           formControlName="name"
           placeholder="e.g. Morning Shift"
-          [error]="
-            shiftForm.get('name')?.touched && shiftForm.get('name')?.invalid ? 'Required' : null
-          "
+          [error]="shiftForm.get('name')?.touched && shiftForm.get('name')?.invalid ? 'Required' : null"
         >
         </app-common-input>
         <app-common-input
           label="Shift Code"
           formControlName="code"
           placeholder="e.g. MORN"
-          [error]="
-            shiftForm.get('code')?.touched && shiftForm.get('code')?.invalid
-              ? 'Required (max 20 chars)'
-              : null
-          "
+          [error]="shiftForm.get('code')?.touched && shiftForm.get('code')?.invalid ? 'Required' : null"
         >
         </app-common-input>
       </div>
 
       <div class="grid grid-cols-2 gap-4">
         <app-common-time-picker
-          label="Start Time (24h)"
+          label="Start Time"
           formControlName="startTime"
           placeholder="09:00"
-          [error]="
-            shiftForm.get('startTime')?.touched && shiftForm.get('startTime')?.invalid
-              ? 'Required'
-              : null
-          "
+          [error]="shiftForm.get('startTime')?.touched && shiftForm.get('startTime')?.invalid ? 'Required' : null"
         >
         </app-common-time-picker>
         <app-common-time-picker
-          label="End Time (24h)"
+          label="End Time"
           formControlName="endTime"
           placeholder="18:00"
-          [error]="
-            shiftForm.get('endTime')?.touched && shiftForm.get('endTime')?.invalid
-              ? 'Required'
-              : null
-          "
+          [error]="shiftForm.get('endTime')?.touched && shiftForm.get('endTime')?.invalid ? 'Required' : null"
         >
         </app-common-time-picker>
       </div>
@@ -200,37 +199,39 @@
           label="Grace Period (min)"
           formControlName="graceMinutes"
           type="number"
-          [error]="
-            shiftForm.get('graceMinutes')?.touched && shiftForm.get('graceMinutes')?.invalid
-              ? 'Must be 0-120'
-              : null
-          "
+          [error]="shiftForm.get('graceMinutes')?.touched && shiftForm.get('graceMinutes')?.invalid ? 'Max 120 min' : null"
         >
         </app-common-input>
         <app-common-input
           label="Break Duration (min)"
           formControlName="breakDuration"
           type="number"
-          [error]="
-            shiftForm.get('breakDuration')?.touched && shiftForm.get('breakDuration')?.invalid
-              ? 'Must be 0-240'
-              : null
-          "
+          [error]="shiftForm.get('breakDuration')?.touched && shiftForm.get('breakDuration')?.invalid ? 'Max 240 min' : null"
         >
         </app-common-input>
       </div>
 
-      <app-common-select label="Status" formControlName="status" [options]="statusOptions">
-      </app-common-select>
+      <div class="flex justify-col gap-1.5">
+        <app-common-select
+          label="Status"
+          [options]="statusOptions"
+          formControlName="status"
+        >
+        </app-common-select>
+      </div>
 
-      <div class="flex justify-end gap-3 mt-6">
-        <app-button label="Cancel" variant="secondary" (onClick)="closeCreateDialog()"></app-button>
+      <div class="flex justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+        <button
+          pButton
+          type="button"
+          label="Cancel"
+          class="p-button-text p-button-secondary"
+          (click)="closeCreateDialog()"
+        ></button>
         <app-button
-          [label]="editMode ? 'Update' : 'Save'"
-          variant="primary"
           type="submit"
+          label="Save Shift"
           [disabled]="shiftForm.invalid"
-          [loading]="loading()"
         ></app-button>
       </div>
     </form>
@@ -239,153 +240,151 @@
   <!-- Bulk Assign Dialog -->
   <p-dialog
     [(visible)]="showBulkAssign"
-    header="Bulk Assign Employees to Shift"
+    header="Assign Employees to Shift"
     [modal]="true"
-    [style]="{ width: '550px' }"
-    class="p-fluid"
+    [style]="{ width: '500px' }"
   >
     <form [formGroup]="bulkAssignForm" (ngSubmit)="onBulkAssign()" class="space-y-4 pt-4">
-      <app-common-select
-        label="Select Shift"
-        formControlName="shiftId"
-        [options]="shiftOptions"
-        placeholder="Choose target shift"
-      >
-      </app-common-select>
-
+      <div *ngIf="!selectedShift()">
+        <app-common-select
+          label="Select Target Shift"
+          [options]="shiftOptions"
+          formControlName="shiftId"
+        >
+        </app-common-select>
+      </div>
+      
       <div class="flex flex-col gap-2">
-        <label class="text-sm font-medium text-slate-700 dark:text-slate-300"
-          >Select Employees</label
-        >
+        <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.1em]">Select Employees</label>
         <p-multiSelect
-          formControlName="employeeIds"
           [options]="employeeOptions"
-          placeholder="Choose employees"
-          styleClass="w-full"
-          [showHeader]="false"
-          [filter]="true"
-          [maxSelectedLabels]="3"
-        >
-        </p-multiSelect>
+          formControlName="employeeIds"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Choose employees..."
+          display="chip"
+          styleClass="w-full text-sm"
+          appendTo="body"
+        ></p-multiSelect>
       </div>
 
-      <app-common-date-picker label="Effective From" formControlName="effectiveFrom">
-      </app-common-date-picker>
+      <app-common-date-picker
+        label="Effective From"
+        formControlName="effectiveFrom"
+      ></app-common-date-picker>
 
-      <div class="flex justify-end gap-3 mt-6">
-        <app-button
+      <div class="flex justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+        <button
+          pButton
+          type="button"
           label="Cancel"
-          variant="secondary"
-          (onClick)="showBulkAssign = false"
-        ></app-button>
+          class="p-button-text p-button-secondary"
+          (click)="showBulkAssign = false"
+        ></button>
         <app-button
-          label="Assign"
-          variant="primary"
           type="submit"
+          label="Assign"
           [disabled]="bulkAssignForm.invalid"
-          [loading]="loading()"
         ></app-button>
       </div>
     </form>
   </p-dialog>
 
-  <!-- Bulk Remove Dialog -->
+  <!-- Remove Employees Dialog -->
   <p-dialog
     [(visible)]="showRemove"
     header="Remove Employees from Shift"
     [modal]="true"
-    [style]="{ width: '450px' }"
-    class="p-fluid"
+    [style]="{ width: '500px' }"
   >
-    <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
-      Select employees to remove from <strong>{{ selectedShift()?.name }}</strong>
-    </p>
-    <form [formGroup]="bulkRemoveForm" (ngSubmit)="onBulkRemove()" class="space-y-4">
+    <form [formGroup]="bulkRemoveForm" (ngSubmit)="onBulkRemove()" class="space-y-4 pt-4">
       <div class="flex flex-col gap-2">
-        <label class="text-sm font-medium text-slate-700 dark:text-slate-300"
-          >Select Employees</label
-        >
+        <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.1em]">Select Employees to Remove</label>
         <p-multiSelect
-          formControlName="employeeIds"
           [options]="shiftEmployeeOptions"
-          placeholder="Choose employees"
-          styleClass="w-full"
-          [showHeader]="false"
-          [filter]="true"
-          [maxSelectedLabels]="3"
-        >
-        </p-multiSelect>
+          formControlName="employeeIds"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Choose employees..."
+          display="chip"
+          styleClass="w-full text-sm"
+          appendTo="body"
+        ></p-multiSelect>
       </div>
 
-      <div class="flex justify-end gap-3 mt-6">
-        <app-button label="Cancel" variant="secondary" (onClick)="showRemove = false"></app-button>
+      <div class="flex justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+        <button
+          pButton
+          type="button"
+          label="Cancel"
+          class="p-button-text p-button-secondary"
+          (click)="showRemove = false"
+        ></button>
         <app-button
+          type="submit"
           label="Remove"
           variant="danger"
-          type="submit"
           [disabled]="bulkRemoveForm.invalid"
-          [loading]="loading()"
         ></app-button>
       </div>
     </form>
   </p-dialog>
 
-  <!-- Transfer Dialog -->
+  <!-- Transfer Employees Dialog -->
   <p-dialog
     [(visible)]="showTransfer"
     header="Transfer Employees Between Shifts"
     [modal]="true"
-    [style]="{ width: '550px' }"
-    class="p-fluid"
+    [style]="{ width: '500px' }"
   >
     <form [formGroup]="transferForm" (ngSubmit)="onTransfer()" class="space-y-4 pt-4">
-      <app-common-select
-        label="From Shift"
-        formControlName="fromShiftId"
-        [options]="shiftOptions"
-        placeholder="Source shift"
-      >
-      </app-common-select>
-
-      <app-common-select
-        label="To Shift"
-        formControlName="toShiftId"
-        [options]="shiftOptions"
-        placeholder="Target shift"
-      >
-      </app-common-select>
-
-      <div class="flex flex-col gap-2">
-        <label class="text-sm font-medium text-slate-700 dark:text-slate-300"
-          >Select Employees</label
+      <div class="grid grid-cols-2 gap-4">
+        <app-common-select
+          label="From Shift"
+          [options]="shiftOptions"
+          formControlName="fromShiftId"
+          (onChange)="transferForm.get('employeeIds')?.reset()"
         >
-        <p-multiSelect
-          formControlName="employeeIds"
-          [options]="employeeOptions"
-          placeholder="Choose employees to transfer"
-          styleClass="w-full"
-          [showHeader]="false"
-          [filter]="true"
-          [maxSelectedLabels]="3"
+        </app-common-select>
+        <app-common-select
+          label="To Shift"
+          [options]="shiftOptions"
+          formControlName="toShiftId"
         >
-        </p-multiSelect>
+        </app-common-select>
       </div>
 
-      <app-common-date-picker label="Effective From" formControlName="effectiveFrom">
-      </app-common-date-picker>
+      <div class="flex flex-col gap-2">
+        <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.1em]">Select Employees</label>
+        <p-multiSelect
+          [options]="shiftEmployeeOptions"
+          formControlName="employeeIds"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Choose employees..."
+          display="chip"
+          styleClass="w-full text-sm"
+          appendTo="body"
+        ></p-multiSelect>
+      </div>
 
-      <div class="flex justify-end gap-3 mt-6">
-        <app-button
+      <app-common-date-picker
+        label="Effective From"
+        formControlName="effectiveFrom"
+      ></app-common-date-picker>
+
+      <div class="flex justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+        <button
+          pButton
+          type="button"
           label="Cancel"
-          variant="secondary"
-          (onClick)="showTransfer = false"
-        ></app-button>
+          class="p-button-text p-button-secondary"
+          (click)="showTransfer = false"
+        ></button>
         <app-button
-          label="Transfer"
-          variant="primary"
           type="submit"
+          label="Transfer"
           [disabled]="transferForm.invalid"
-          [loading]="loading()"
         ></app-button>
       </div>
     </form>

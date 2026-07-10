@@ -48,7 +48,6 @@
         white-space: nowrap !important;
     }
 
-    /* Skeleton shimmer in loading rows */
     .p-skeleton {
         @apply !bg-slate-200 dark:!bg-slate-700/60 !important;
         background-image: linear-gradient(
@@ -65,13 +64,15 @@
         0%   { background-position: -200% 0; }
         100% { background-position:  200% 0; }
     }
-
-    .dark .p-skeleton {
-        background-image: linear-gradient(
-            90deg,
-            transparent 0%,
-            rgba(255, 255, 255, 0.06) 50%,
-            transparent 100%
-        ) !important;
-    }
 }
+
+/* Match dark class on root html element */
+html.dark ::ng-deep .p-skeleton {
+    background-image: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.06) 50%,
+        transparent 100%
+    ) !important;
+}
+

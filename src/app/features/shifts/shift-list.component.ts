@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ShiftsStore } from '../../store/shifts.store';
 import { EmployeeStore } from '../../store/employee.store';
@@ -104,6 +104,22 @@ export class ShiftListComponent implements OnInit {
     { field: 'effectiveFrom', header: 'Effective From', type: 'date' },
     { field: 'isActive', header: 'Status', type: 'status' },
   ];
+
+  shiftColumns: Column[] = [
+    { field: 'name', header: 'Shift Name' },
+    { field: 'code', header: 'Code' },
+    { field: 'timings', header: 'Shift Timings' },
+    { field: 'graceMinutes', header: 'Grace Period (min)', type: 'number' },
+    { field: 'employeeCount', header: 'Assigned Employees', type: 'number' },
+    { field: 'status', header: 'Status', type: 'status' },
+  ];
+
+  processedShifts = computed(() => {
+    return this.shifts().map((s) => ({
+      ...s,
+      timings: `${this.formatTime(s.startTime)} - ${this.formatTime(s.endTime)}`
+    }));
+  });
 
   statusOptions = [
     { label: 'Active', value: 'active' },

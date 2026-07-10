@@ -97,6 +97,7 @@ export const SIDEBAR_NAV_ITEMS: SidebarNavItem[] = [
     label: 'Payroll',
     icon: 'pi pi-money-bill',
     route: '/payroll',
+    exact: true,
     roles: [
       SystemRole.SUPER_ADMIN,
       SystemRole.COMPANY_ADMIN,
@@ -108,6 +109,7 @@ export const SIDEBAR_NAV_ITEMS: SidebarNavItem[] = [
     label: 'Salary Revisions',
     icon: 'pi pi-percentage',
     route: '/payroll/revisions',
+    exact: true,
     roles: [
       SystemRole.SUPER_ADMIN,
       SystemRole.COMPANY_ADMIN,

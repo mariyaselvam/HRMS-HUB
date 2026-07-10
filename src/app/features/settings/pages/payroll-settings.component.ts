@@ -9,6 +9,8 @@ import { CommonButtonComponent } from '../../../shared/components/common-button.
 import { NotificationService } from '../../../core/services/notification.service';
 import { PayrollAuditTableComponent } from './components/payroll-audit-table.component';
 import { ManualPayrollModalComponent } from './components/manual-payroll-modal.component';
+import { PayrollComponentsSettingsComponent } from './components/payroll-components-settings.component';
+import { PayrollTemplatesSettingsComponent } from './components/payroll-templates-settings.component';
 import { TabsModule } from 'primeng/tabs';
 
 @Component({
@@ -17,17 +19,20 @@ import { TabsModule } from 'primeng/tabs';
     imports: [
         CommonModule, FormsModule, CardModule, CommonInputComponent, 
         CommonSelectComponent, CommonButtonComponent, TabsModule,
-        PayrollAuditTableComponent, ManualPayrollModalComponent
+        PayrollAuditTableComponent, ManualPayrollModalComponent,
+        PayrollComponentsSettingsComponent, PayrollTemplatesSettingsComponent
     ],
     template: `
         <div class="mb-6">
             <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-100">Payroll Engine</h2>
-            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Configure automated rules or trigger manual payroll runs.</p>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Configure components templates, scheduling, and automatic runs.</p>
         </div>
 
         <p-tabs value="rules">
             <p-tablist>
                 <p-tab value="rules">Configuration Rules</p-tab>
+                <p-tab value="components">Salary Components</p-tab>
+                <p-tab value="templates">Salary Templates</p-tab>
                 <p-tab value="audit">Execution & Audit Logs</p-tab>
             </p-tablist>
             
@@ -91,6 +96,18 @@ import { TabsModule } from 'primeng/tabs';
                             </div>
                         </div>
                     </p-card>
+                </p-tabpanel>
+
+                <p-tabpanel value="components">
+                    <div class="mt-4">
+                        <app-payroll-components-settings></app-payroll-components-settings>
+                    </div>
+                </p-tabpanel>
+
+                <p-tabpanel value="templates">
+                    <div class="mt-4">
+                        <app-payroll-templates-settings></app-payroll-templates-settings>
+                    </div>
                 </p-tabpanel>
 
                 <p-tabpanel value="audit">
