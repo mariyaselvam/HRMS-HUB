@@ -181,6 +181,11 @@
                 label="Work Mode"
                 [options]="workModeOptions"
               ></app-common-select>
+              <app-common-select
+                formControlName="salaryTemplateId"
+                label="Salary Template"
+                [options]="salaryTemplateOptions()"
+              ></app-common-select>
               <app-common-input
                 formControlName="probationPeriod"
                 label="Probation (Months)"
@@ -265,39 +270,72 @@
                 <h3 class="text-lg font-bold mb-4 text-slate-800 flex items-center gap-2">
                   <i class="pi pi-money-bill text-indigo-500"></i> Monthly Compensation (INR)
                 </h3>
-                <form [formGroup]="step5Form" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <form [formGroup]="step5Form" class="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <app-common-input
                     formControlName="ctc"
                     label="Annual CTC"
                     type="number"
                     hint="Total Cost to Company"
                   ></app-common-input>
-                  <app-common-input
-                    formControlName="basicSalary"
-                    label="Basic Salary"
-                    type="number"
-                    [error]="getErrorMessage(step5Form, 'basicSalary')"
-                  ></app-common-input>
-                  <app-common-input
-                    formControlName="hra"
-                    label="HRA"
-                    type="number"
-                  ></app-common-input>
-                  <app-common-input
-                    formControlName="transportAllowance"
-                    label="Transport"
-                    type="number"
-                  ></app-common-input>
-                  <app-common-input
-                    formControlName="otherAllowances"
-                    label="Special Allowance"
-                    type="number"
-                  ></app-common-input>
                   <app-common-date-picker
                     formControlName="effectiveFrom"
                     label="Effective From"
                   ></app-common-date-picker>
                 </form>
+
+                <!-- Premium Dynamic Breakdown Display -->
+                @if (breakdownItems().length > 0) {
+                  <div class="mt-6 p-6 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800">
+                    <h4 class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-4">Salary Structure Breakdown</h4>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <!-- Earnings -->
+                      <div class="space-y-3">
+                        <div class="text-sm font-bold text-emerald-600 flex items-center gap-1">
+                          <i class="pi pi-plus-circle"></i> Earnings (Monthly)
+                        </div>
+                        <div class="bg-white dark:bg-slate-950 rounded-lg p-4 border border-slate-100 dark:border-slate-900 space-y-2">
+                          @for (item of getEarnings(); track item.code) {
+                            <div class="flex justify-between items-center text-sm py-1 border-b border-dashed border-slate-100 dark:border-slate-800 last:border-0">
+                              <span class="text-slate-600 dark:text-slate-300 font-medium">{{ item.name }}</span>
+                              <span class="text-slate-900 dark:text-white font-semibold">₹{{ item.value | number: '1.2-2' }}</span>
+                            </div>
+                          }
+                        </div>
+                      </div>
+
+                      <!-- Deductions -->
+                      <div class="space-y-3">
+                        <div class="text-sm font-bold text-rose-600 flex items-center gap-1">
+                          <i class="pi pi-minus-circle"></i> Deductions (Monthly)
+                        </div>
+                        <div class="bg-white dark:bg-slate-950 rounded-lg p-4 border border-slate-100 dark:border-slate-900 space-y-2">
+                          @if (getDeductions().length === 0) {
+                            <div class="text-xs text-slate-400 italic py-2 text-center">No deductions configured</div>
+                          } @else {
+                            @for (item of getDeductions(); track item.code) {
+                              <div class="flex justify-between items-center text-sm py-1 border-b border-dashed border-slate-100 dark:border-slate-800 last:border-0">
+                                <span class="text-slate-600 dark:text-slate-300 font-medium">{{ item.name }}</span>
+                                <span class="text-rose-600 dark:text-rose-400 font-semibold">₹{{ item.value | number: '1.2-2' }}</span>
+                              </div>
+                            }
+                          }
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Estimated Net Take Home -->
+                    <div class="mt-6 p-4 bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/50 rounded-lg flex justify-between items-center">
+                      <div>
+                        <div class="text-sm font-bold text-indigo-950 dark:text-indigo-300">Estimated Net Monthly Take-Home</div>
+                        <div class="text-xs text-indigo-500">Based on configured earnings and PF/ESI/PT statutory regulations.</div>
+                      </div>
+                      <div class="text-2xl font-black text-indigo-600 dark:text-indigo-400">
+                        ₹{{ netSalary() | number: '1.2-2' }}
+                      </div>
+                    </div>
+                  </div>
+                }
               </div>
 
               <hr class="border-slate-100 dark:border-slate-800" />

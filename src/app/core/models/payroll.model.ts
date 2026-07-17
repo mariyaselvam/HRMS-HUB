@@ -1,14 +1,27 @@
+export interface SalaryStructureItem {
+    id: string;
+    salaryStructureId: string;
+    salaryComponentId: string;
+    amount: number;
+    component: {
+        id: string;
+        name: string;
+        code: string;
+        type: 'earning' | 'deduction';
+        calcType: string;
+        calcValue?: number;
+    };
+}
+
 export interface SalaryStructure {
     id: string;
     employeeId: string;
-    basicSalary: number;
-    hra: number;
-    transportAllowance: number;
-    otherAllowances: number;
     grossSalary: number;
+    netSalary: number;
     effectiveFrom: string;
     isActive: boolean;
     createdAt: string;
+    items?: SalaryStructureItem[];
 }
 
 export type PayrollStatus = 'draft' | 'finalized' | 'paid';
@@ -76,11 +89,12 @@ export interface PayrollState {
 
 export interface SalarySetupInput {
     employeeId: string;
-    basicSalary: number;
-    hra: number;
-    transportAllowance: number;
-    otherAllowances: number;
+    grossSalary: number;
     effectiveFrom: string;
+    items: {
+        salaryComponentId: string;
+        amount: number;
+    }[];
 }
 
 export interface GeneratePayrollInput {

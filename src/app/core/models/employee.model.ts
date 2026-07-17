@@ -36,6 +36,7 @@ export interface EmployeeApiResponse {
   bankDetails?: any;
   statutoryDetails?: any;
   documents?: any[];
+  salaryTemplateId?: string | null;
 }
 
 /** Flattened employee used throughout the frontend UI */
@@ -62,6 +63,7 @@ export interface Employee {
   departmentId?: string;
   workLocationId?: string;
   teamId?: string;
+  salaryTemplateId?: string | null;
 }
 
 /** Generic API wrapper matching backend response shape */
@@ -101,5 +103,6 @@ export function mapEmployeeResponse(raw: EmployeeApiResponse): Employee {
     departmentId: raw.departmentId,
     workLocationId: raw.workLocationId ?? undefined,
     teamId: raw.teamId ?? undefined,
+    salaryTemplateId: raw.salaryTemplateId,
   };
 }

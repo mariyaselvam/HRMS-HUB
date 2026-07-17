@@ -23,6 +23,8 @@ import {
   PT_STATE_OPTIONS,
 } from './onboarding.constants';
 
+import { SalaryConfigService } from '../../core/services/salary-config.service';
+
 @Component({
   selector: 'app-onboarding',
   standalone: true,
@@ -46,9 +48,14 @@ export class OnboardingComponent implements OnInit {
   protected teamStore = inject(TeamStore);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private salaryConfig = inject(SalaryConfigService);
 
   activeStep = signal(1);
   employeeId = signal<string | null>(null);
+  salaryTemplateOptions = signal<{ label: string; value: string }[]>([]);
+  breakdownItems = signal<any[]>([]);
+  netSalary = signal<number>(0);
+  componentsList = signal<any[]>([]);
 
   // Document Upload State
   uploadedFiles = signal<{ file: File; type: string; previewUrl?: string }[]>([]);
@@ -90,6 +97,7 @@ export class OnboardingComponent implements OnInit {
     workLocationType: ['Office'],
     probationPeriod: [6],
     noticePeriod: [90],
+    salaryTemplateId: [null],
   });
 
   step4Form: FormGroup = this.fb.group({
@@ -145,19 +153,59 @@ export class OnboardingComponent implements OnInit {
     this.teamStore.loadTeams();
     this.store.loadEmployees();
 
-    // Watch CTC to auto-calculate breakdown
+    this.salaryConfig.getTemplates().subscribe((templates) => {
+      this.salaryTemplateOptions.set(
+        templates.map((t) => ({ label: t.name, value: t.id! }))
+      );
+    });
+
+    this.salaryConfig.getComponents().subscribe((comps) => {
+      this.componentsList.set(comps);
+    });
+
+    // Watch CTC to auto-calculate breakdown dynamically
     this.step5Form.get('ctc')?.valueChanges.subscribe((ctc) => {
-      if (ctc > 0 && this.step5Form.get('basicSalary')?.pristine) {
-        const basic = Math.round((ctc * 0.5) / 12); // 50% of CTC monthly
-        const hra = Math.round(basic * 0.4); // 40% of Basic
-        this.step5Form.patchValue(
-          {
+      if (ctc > 0) {
+        const monthlyCTC = Math.round(ctc / 12);
+        const templateId = this.step3Form.get('salaryTemplateId')?.value;
+        if (templateId) {
+          this.salaryConfig.calculatePreview(templateId, monthlyCTC).subscribe({
+            next: (res) => {
+              this.breakdownItems.set(res.breakdown);
+              this.netSalary.set(res.netSalary);
+              // Patch legacy form fields for fallback compatibility
+              const basic = res.breakdown.find(i => i.code === 'BASIC')?.value || 0;
+              const hra = res.breakdown.find(i => i.code === 'HRA')?.value || 0;
+              const transport = res.breakdown.find(i => i.code === 'TRANSPORT')?.value || 0;
+              const special = res.breakdown.find(i => i.code === 'SPECIAL' || i.code === 'OTHER')?.value || 0;
+
+              this.step5Form.patchValue({
+                basicSalary: basic,
+                hra: hra,
+                transportAllowance: transport,
+                otherAllowances: special,
+              }, { emitEvent: false });
+            }
+          });
+        } else {
+          // Fallback default calculation if no template selected
+          const basic = Math.round((ctc * 0.5) / 12);
+          const hra = Math.round(basic * 0.4);
+          const other = Math.round(monthlyCTC - basic - hra);
+          this.breakdownItems.set([
+            { code: 'BASIC', name: 'Basic Salary', type: 'earning', value: basic },
+            { code: 'HRA', name: 'House Rent Allowance', type: 'earning', value: hra },
+            { code: 'SPECIAL', name: 'Special Allowance', type: 'earning', value: other }
+          ]);
+          this.netSalary.set(monthlyCTC);
+
+          this.step5Form.patchValue({
             basicSalary: basic,
             hra: hra,
-            otherAllowances: Math.round(ctc / 12 - basic - hra),
-          },
-          { emitEvent: false },
-        );
+            transportAllowance: 0,
+            otherAllowances: other,
+          }, { emitEvent: false });
+        }
       }
     });
 
@@ -196,7 +244,10 @@ export class OnboardingComponent implements OnInit {
 
       // 3. Pre-fill Step 3 (Job)
       if (emp.jobDetails) {
-        this.step3Form.patchValue(emp.jobDetails);
+        this.step3Form.patchValue({
+          ...emp.jobDetails,
+          salaryTemplateId: emp.salaryTemplateId || null,
+        });
       }
 
       // 4. Pre-fill Step 4 (Bank)
@@ -221,13 +272,18 @@ export class OnboardingComponent implements OnInit {
       this.store.loadSalaryStructure(id).subscribe((salary) => {
         if (salary) {
           this.step5Form.patchValue({
-            basicSalary: Number(salary.basicSalary),
-            hra: Number(salary.hra),
-            transportAllowance: Number(salary.transportAllowance),
-            otherAllowances: Number(salary.otherAllowances),
             effectiveFrom: new Date(salary.effectiveFrom),
-            ctc: Number(salary.grossSalary) * 12, // Simplified approximation
+            ctc: Number(salary.grossSalary) * 12,
           });
+          if (salary.items && salary.items.length > 0) {
+            this.breakdownItems.set(salary.items.map((i: any) => ({
+              code: i.component.code,
+              name: i.component.name,
+              type: i.component.type,
+              value: Number(i.amount)
+            })));
+            this.netSalary.set(Number(salary.netSalary));
+          }
         }
       });
 
@@ -302,7 +358,6 @@ export class OnboardingComponent implements OnInit {
       },
     });
   }
-
   handleStep5(nextCallback: any) {
     if (this.step5Form.invalid) {
       this.step5Form.markAllAsTouched();
@@ -311,7 +366,15 @@ export class OnboardingComponent implements OnInit {
 
     const val = this.step5Form.value;
 
-    // We use forkJoin if we need to wait for both, or just sequential
+    const comps = this.componentsList();
+    const items = this.breakdownItems().map(b => {
+      const component = comps.find(c => c.code === b.code);
+      return {
+        salaryComponentId: component?.id || '',
+        amount: b.value
+      };
+    }).filter(i => i.salaryComponentId !== '');
+
     this.store
       .saveStatutoryDetails(this.employeeId()!, {
         pan: val.pan,
@@ -327,11 +390,9 @@ export class OnboardingComponent implements OnInit {
           this.store
             .setupSalary({
               employeeId: this.employeeId()!,
-              basicSalary: val.basicSalary,
-              hra: val.hra,
-              transportAllowance: val.transportAllowance,
-              otherAllowances: val.otherAllowances,
+              grossSalary: val.ctc / 12,
               effectiveFrom: val.effectiveFrom,
+              items: items
             })
             .subscribe({
               next: () => {
@@ -341,6 +402,13 @@ export class OnboardingComponent implements OnInit {
             });
         },
       });
+  }
+  getEarnings() {
+    return this.breakdownItems().filter(i => i.type === 'earning');
+  }
+
+  getDeductions() {
+    return this.breakdownItems().filter(i => i.type === 'deduction');
   }
 
   // --- Step 6: Documents ---

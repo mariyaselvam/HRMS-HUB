@@ -14,11 +14,12 @@ import { Department } from '../core/models/department.model';
 
 export interface SalarySetupPayload {
     employeeId: string;
-    basicSalary: number;
-    hra: number;
-    transportAllowance: number;
-    otherAllowances: number;
+    grossSalary: number;
     effectiveFrom: string;
+    items: {
+        salaryComponentId: string;
+        amount: number;
+    }[];
 }
 
 @Injectable({
