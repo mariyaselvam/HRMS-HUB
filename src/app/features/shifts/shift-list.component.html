@@ -1,9 +1,13 @@
 <div class="space-y-6 pb-10">
   <!-- State A: Shifts List Table View -->
   @if (!selectedShift()) {
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 px-4 mb-2">
+    <div
+      class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 px-4 mb-2"
+    >
       <div class="flex-1">
-        <h1 class="text-2xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight transition-all">
+        <h1
+          class="text-2xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight transition-all"
+        >
           Shift Management
         </h1>
         <p class="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">
@@ -79,15 +83,23 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 px-4">
       <!-- Left Column: Shift Settings Summary -->
       <div class="col-span-1 space-y-4">
-        <p-card styleClass="!shadow-sm !border-slate-200 dark:!border-slate-800">
-          <div class="flex justify-between items-center pb-3 border-b border-slate-100 dark:border-slate-800">
+        <p-card class="!shadow-sm !border-slate-200 dark:!border-slate-800">
+          <div
+            class="flex justify-between items-center pb-3 border-b border-slate-100 dark:border-slate-800"
+          >
             <div>
-              <h3 class="font-bold text-slate-900 dark:text-white text-base">{{ selectedShift()!.name }}</h3>
+              <h3 class="font-bold text-slate-900 dark:text-white text-base">
+                {{ selectedShift()!.name }}
+              </h3>
               <p class="text-xs text-slate-500">Code: {{ selectedShift()!.code }}</p>
             </div>
             <span
               class="text-xs px-2.5 py-1 rounded-full font-semibold uppercase tracking-wider"
-              [ngClass]="selectedShift()!.status === 'active' ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/20 dark:text-emerald-400' : 'bg-rose-50 text-rose-700 dark:bg-rose-950/20 dark:text-rose-400'"
+              [ngClass]="
+                selectedShift()!.status === 'active'
+                  ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/20 dark:text-emerald-400'
+                  : 'bg-rose-50 text-rose-700 dark:bg-rose-950/20 dark:text-rose-400'
+              "
             >
               {{ selectedShift()!.status }}
             </span>
@@ -96,23 +108,33 @@
           <div class="mt-4 space-y-3.5 text-sm">
             <div class="flex justify-between">
               <span class="text-slate-500">Start Time:</span>
-              <span class="font-semibold text-slate-800 dark:text-slate-200">{{ formatTime(selectedShift()!.startTime) }}</span>
+              <span class="font-semibold text-slate-800 dark:text-slate-200">{{
+                formatTime(selectedShift()!.startTime)
+              }}</span>
             </div>
             <div class="flex justify-between">
               <span class="text-slate-500">End Time:</span>
-              <span class="font-semibold text-slate-800 dark:text-slate-200">{{ formatTime(selectedShift()!.endTime) }}</span>
+              <span class="font-semibold text-slate-800 dark:text-slate-200">{{
+                formatTime(selectedShift()!.endTime)
+              }}</span>
             </div>
             <div class="flex justify-between">
               <span class="text-slate-500">Grace Period:</span>
-              <span class="font-semibold text-slate-800 dark:text-slate-200">{{ selectedShift()!.graceMinutes }} minutes</span>
+              <span class="font-semibold text-slate-800 dark:text-slate-200"
+                >{{ selectedShift()!.graceMinutes }} minutes</span
+              >
             </div>
             <div class="flex justify-between">
               <span class="text-slate-500">Break Duration:</span>
-              <span class="font-semibold text-slate-800 dark:text-slate-200">{{ selectedShift()!.breakDuration }} minutes</span>
+              <span class="font-semibold text-slate-800 dark:text-slate-200"
+                >{{ selectedShift()!.breakDuration }} minutes</span
+              >
             </div>
             <div class="flex justify-between pt-3 border-t border-slate-100 dark:border-slate-800">
               <span class="text-slate-500">Assigned Total:</span>
-              <span class="font-bold text-indigo-600 dark:text-indigo-400 text-base">{{ totalShiftEmployees() }} Employees</span>
+              <span class="font-bold text-indigo-600 dark:text-indigo-400 text-base"
+                >{{ totalShiftEmployees() }} Employees</span
+              >
             </div>
           </div>
         </p-card>
@@ -120,9 +142,13 @@
 
       <!-- Right Column: Employee Table -->
       <div class="col-span-1 lg:col-span-2">
-        <p-card styleClass="!shadow-sm !border-slate-200 dark:!border-slate-800">
-          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
-            <h3 class="font-bold text-slate-800 dark:text-white text-base">Assigned Employees List</h3>
+        <p-card class="!shadow-sm !border-slate-200 dark:!border-slate-800">
+          <div
+            class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4"
+          >
+            <h3 class="font-bold text-slate-800 dark:text-white text-base">
+              Assigned Employees List
+            </h3>
             <app-common-input
               placeholder="Search employee..."
               (input)="onSearch($event)"
@@ -165,14 +191,18 @@
           label="Shift Name"
           formControlName="name"
           placeholder="e.g. Morning Shift"
-          [error]="shiftForm.get('name')?.touched && shiftForm.get('name')?.invalid ? 'Required' : null"
+          [error]="
+            shiftForm.get('name')?.touched && shiftForm.get('name')?.invalid ? 'Required' : null
+          "
         >
         </app-common-input>
         <app-common-input
           label="Shift Code"
           formControlName="code"
           placeholder="e.g. MORN"
-          [error]="shiftForm.get('code')?.touched && shiftForm.get('code')?.invalid ? 'Required' : null"
+          [error]="
+            shiftForm.get('code')?.touched && shiftForm.get('code')?.invalid ? 'Required' : null
+          "
         >
         </app-common-input>
       </div>
@@ -182,14 +212,22 @@
           label="Start Time"
           formControlName="startTime"
           placeholder="09:00"
-          [error]="shiftForm.get('startTime')?.touched && shiftForm.get('startTime')?.invalid ? 'Required' : null"
+          [error]="
+            shiftForm.get('startTime')?.touched && shiftForm.get('startTime')?.invalid
+              ? 'Required'
+              : null
+          "
         >
         </app-common-time-picker>
         <app-common-time-picker
           label="End Time"
           formControlName="endTime"
           placeholder="18:00"
-          [error]="shiftForm.get('endTime')?.touched && shiftForm.get('endTime')?.invalid ? 'Required' : null"
+          [error]="
+            shiftForm.get('endTime')?.touched && shiftForm.get('endTime')?.invalid
+              ? 'Required'
+              : null
+          "
         >
         </app-common-time-picker>
       </div>
@@ -199,24 +237,28 @@
           label="Grace Period (min)"
           formControlName="graceMinutes"
           type="number"
-          [error]="shiftForm.get('graceMinutes')?.touched && shiftForm.get('graceMinutes')?.invalid ? 'Max 120 min' : null"
+          [error]="
+            shiftForm.get('graceMinutes')?.touched && shiftForm.get('graceMinutes')?.invalid
+              ? 'Max 120 min'
+              : null
+          "
         >
         </app-common-input>
         <app-common-input
           label="Break Duration (min)"
           formControlName="breakDuration"
           type="number"
-          [error]="shiftForm.get('breakDuration')?.touched && shiftForm.get('breakDuration')?.invalid ? 'Max 240 min' : null"
+          [error]="
+            shiftForm.get('breakDuration')?.touched && shiftForm.get('breakDuration')?.invalid
+              ? 'Max 240 min'
+              : null
+          "
         >
         </app-common-input>
       </div>
 
       <div class="flex justify-col gap-1.5">
-        <app-common-select
-          label="Status"
-          [options]="statusOptions"
-          formControlName="status"
-        >
+        <app-common-select label="Status" [options]="statusOptions" formControlName="status">
         </app-common-select>
       </div>
 
@@ -228,11 +270,7 @@
           class="p-button-text p-button-secondary"
           (click)="closeCreateDialog()"
         ></button>
-        <app-button
-          type="submit"
-          label="Save Shift"
-          [disabled]="shiftForm.invalid"
-        ></app-button>
+        <app-button type="submit" label="Save Shift" [disabled]="shiftForm.invalid"></app-button>
       </div>
     </form>
   </p-dialog>
@@ -253,9 +291,12 @@
         >
         </app-common-select>
       </div>
-      
+
       <div class="flex flex-col gap-2">
-        <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.1em]">Select Employees</label>
+        <label
+          class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.1em]"
+          >Select Employees</label
+        >
         <p-multiSelect
           [options]="employeeOptions"
           formControlName="employeeIds"
@@ -263,7 +304,7 @@
           optionValue="value"
           placeholder="Choose employees..."
           display="chip"
-          styleClass="w-full text-sm"
+          class="w-full text-sm"
           appendTo="body"
         ></p-multiSelect>
       </div>
@@ -281,11 +322,7 @@
           class="p-button-text p-button-secondary"
           (click)="showBulkAssign = false"
         ></button>
-        <app-button
-          type="submit"
-          label="Assign"
-          [disabled]="bulkAssignForm.invalid"
-        ></app-button>
+        <app-button type="submit" label="Assign" [disabled]="bulkAssignForm.invalid"></app-button>
       </div>
     </form>
   </p-dialog>
@@ -299,7 +336,10 @@
   >
     <form [formGroup]="bulkRemoveForm" (ngSubmit)="onBulkRemove()" class="space-y-4 pt-4">
       <div class="flex flex-col gap-2">
-        <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.1em]">Select Employees to Remove</label>
+        <label
+          class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.1em]"
+          >Select Employees to Remove</label
+        >
         <p-multiSelect
           [options]="shiftEmployeeOptions"
           formControlName="employeeIds"
@@ -307,7 +347,7 @@
           optionValue="value"
           placeholder="Choose employees..."
           display="chip"
-          styleClass="w-full text-sm"
+          class="w-full text-sm"
           appendTo="body"
         ></p-multiSelect>
       </div>
@@ -346,16 +386,15 @@
           (onChange)="transferForm.get('employeeIds')?.reset()"
         >
         </app-common-select>
-        <app-common-select
-          label="To Shift"
-          [options]="shiftOptions"
-          formControlName="toShiftId"
-        >
+        <app-common-select label="To Shift" [options]="shiftOptions" formControlName="toShiftId">
         </app-common-select>
       </div>
 
       <div class="flex flex-col gap-2">
-        <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.1em]">Select Employees</label>
+        <label
+          class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.1em]"
+          >Select Employees</label
+        >
         <p-multiSelect
           [options]="shiftEmployeeOptions"
           formControlName="employeeIds"
@@ -363,7 +402,7 @@
           optionValue="value"
           placeholder="Choose employees..."
           display="chip"
-          styleClass="w-full text-sm"
+          class="w-full text-sm"
           appendTo="body"
         ></p-multiSelect>
       </div>
@@ -381,11 +420,7 @@
           class="p-button-text p-button-secondary"
           (click)="showTransfer = false"
         ></button>
-        <app-button
-          type="submit"
-          label="Transfer"
-          [disabled]="transferForm.invalid"
-        ></app-button>
+        <app-button type="submit" label="Transfer" [disabled]="transferForm.invalid"></app-button>
       </div>
     </form>
   </p-dialog>

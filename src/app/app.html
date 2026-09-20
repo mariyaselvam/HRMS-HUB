@@ -34,7 +34,7 @@
         @if (authService.hasRole('company_admin')) {
         <p-select [options]="locationStore.locations()" optionLabel="name" optionValue="id"
           [ngModel]="contextStore.activeBranchId()" (ngModelChange)="contextStore.setActiveBranch($event)"
-          placeholder="All Branches" [showClear]="true" styleClass="w-48 !h-9 !text-sm">
+          placeholder="All Branches" [showClear]="true" class="w-48 !h-9 !text-sm">
         </p-select>
         }
 

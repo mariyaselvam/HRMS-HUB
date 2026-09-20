@@ -31,7 +31,7 @@
 
   <!-- Selection Cards -->
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-    <p-card styleClass="!shadow-sm !border-slate-200 dark:!border-slate-800">
+    <p-card class="!shadow-sm !border-slate-200 dark:!border-slate-800">
       <div class="space-y-4">
         <h3 class="font-semibold text-slate-700 dark:text-slate-300">Select Campaign Cycle</h3>
         <p-select
@@ -41,7 +41,7 @@
           [(ngModel)]="selectedCycleId"
           (onChange)="onCycleChange()"
           placeholder="Choose a Cycle"
-          styleClass="w-full"
+          class="w-full"
         ></p-select>
 
         <div *ngIf="activeCycle()" class="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2 text-xs">
@@ -61,7 +61,7 @@
     </p-card>
 
     <!-- Stats Panel -->
-    <p-card styleClass="!shadow-sm !border-slate-200 dark:!border-slate-800 col-span-2">
+    <p-card class="!shadow-sm !border-slate-200 dark:!border-slate-800 col-span-2">
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
         <div class="space-y-1">
           <span class="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Revised Employees</span>
@@ -80,7 +80,7 @@
   </div>
 
   <!-- Revisions Table -->
-  <p-card *ngIf="selectedCycleId()" styleClass="!shadow-none !border-slate-200 dark:!border-slate-800">
+  <p-card *ngIf="selectedCycleId()" class="!shadow-none !border-slate-200 dark:!border-slate-800">
     <div class="flex justify-between items-center mb-4">
       <h2 class="text-lg font-bold text-slate-900 dark:text-white">Proposed Revisions Sheet</h2>
       <div class="text-xs text-slate-500 italic" *ngIf="activeCycle()?.status === 'applied'">
@@ -152,7 +152,7 @@
           [(ngModel)]="bulkDepartmentId"
           placeholder="All Departments"
           [showClear]="true"
-          styleClass="w-full"
+          class="w-full"
         ></p-select>
       </div>
       <div class="flex flex-col gap-1.5">
@@ -162,7 +162,7 @@
           optionLabel="label"
           optionValue="value"
           [(ngModel)]="bulkAdjustmentType"
-          styleClass="w-full"
+          class="w-full"
         ></p-select>
       </div>
       <div class="flex flex-col gap-1.5">
