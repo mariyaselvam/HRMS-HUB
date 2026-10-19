@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CardModule } from 'primeng/card';
 import { PayrollRulesService } from '../services/payroll-rules.service';
+import { LocationStore } from '../../../store/location.store';
 import { CommonInputComponent } from '../../../shared/components/common-input/common-input.component';
 import { CommonSelectComponent } from '../../../shared/components/common-select/common-select.component';
 import { CommonButtonComponent } from '../../../shared/components/common-button.component/common-button.component';
@@ -40,6 +41,39 @@ import { TabsModule } from 'primeng/tabs';
                 <p-tabpanel value="rules">
                     <p-card class="!shadow-none !border-slate-300 dark:!border-slate-800 mt-4">
                         <div class="p-4">
+                            <!-- Hierarchical Scope Switcher -->
+                            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 mb-6 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+                                        <i class="pi pi-sitemap text-lg"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-sm font-bold text-slate-800 dark:text-white">Rule Scope Target</h4>
+                                        <p class="text-xs text-slate-500">Configure Company Master Default or a Branch Override</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3 w-full sm:w-auto">
+                                    <select [(ngModel)]="selectedLocationScope" (ngModelChange)="onScopeChange($event)"
+                                        class="px-3 py-2 text-sm bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm w-full sm:w-64">
+                                        <option value="">🏢 Company Master Default (Corporate Root)</option>
+                                        <optgroup label="Branch Specific Overrides">
+                                            <option *ngFor="let loc of locationStore.locations()" [value]="loc.id">
+                                                📍 {{ loc.name }} {{ loc.cluster ? '(' + loc.cluster.name + ')' : '' }}
+                                            </option>
+                                        </optgroup>
+                                    </select>
+                                    <span *ngIf="selectedLocationScope && isInherited" class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800 whitespace-nowrap">
+                                        <i class="pi pi-link mr-1"></i> Inheriting Master
+                                    </span>
+                                    <span *ngIf="selectedLocationScope && !isInherited" class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 whitespace-nowrap">
+                                        <i class="pi pi-check-circle mr-1"></i> Custom Override
+                                    </span>
+                                    <span *ngIf="!selectedLocationScope" class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800 whitespace-nowrap">
+                                        <i class="pi pi-shield mr-1"></i> Company Default
+                                    </span>
+                                </div>
+                            </div>
+
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pb-6">
                                 <!-- Frequency & Mode -->
                                 <div class="col-span-1 md:col-span-2">
@@ -91,8 +125,11 @@ import { TabsModule } from 'primeng/tabs';
                                 </div>
                             </div>
 
-                            <div class="mt-6 flex justify-end">
-                                <app-button label="Save Configuration" icon="pi pi-save" variant="primary" (onClick)="save()" [loading]="saving"></app-button>
+                            <div class="mt-6 flex justify-between items-center border-t border-slate-200 dark:border-slate-800 pt-4">
+                                <span class="text-xs text-slate-500">
+                                    Editing: <b class="text-slate-700 dark:text-slate-300">{{ selectedLocationScope ? 'Branch Override' : 'Company Master Default' }}</b>
+                                </span>
+                                <app-button [label]="selectedLocationScope ? 'Save Branch Override' : 'Save Master Configuration'" icon="pi pi-save" variant="primary" (onClick)="save()" [loading]="saving"></app-button>
                             </div>
                         </div>
                     </p-card>
@@ -114,9 +151,9 @@ import { TabsModule } from 'primeng/tabs';
                     <div class="mt-4 flex justify-between items-center mb-4">
                         <div>
                             <h3 class="text-lg font-semibold text-slate-800 dark:text-white">Run History</h3>
-                            <p class="text-sm text-slate-500">Track all automated and manual payroll executions.</p>
+                            <p class="text-sm text-slate-500">Track all automated, manual, and multi-branch batch payroll executions.</p>
                         </div>
-                        <app-button label="Manual Run" icon="pi pi-play" variant="secondary" (onClick)="showManualModal = true"></app-button>
+                        <app-button label="Eagle-Eye Payroll Run" icon="pi pi-bolt" variant="primary" (onClick)="showManualModal = true"></app-button>
                     </div>
                     
                     <app-payroll-audit-table [refreshTrigger]="refreshAudit"></app-payroll-audit-table>
@@ -133,10 +170,13 @@ import { TabsModule } from 'primeng/tabs';
 export class PayrollSettingsComponent implements OnInit {
     private service = inject(PayrollRulesService);
     private notify = inject(NotificationService);
+    protected locationStore = inject(LocationStore);
 
     saving = false;
     showManualModal = false;
     refreshAudit = 0;
+    selectedLocationScope = '';
+    isInherited = false;
 
     form: any = {
         frequencyType: 'Monthly',
@@ -176,13 +216,24 @@ export class PayrollSettingsComponent implements OnInit {
     ];
 
     ngOnInit() {
+        this.locationStore.loadLocations();
+        this.loadRule();
+    }
+
+    onScopeChange(locationId: string) {
+        this.selectedLocationScope = locationId;
         this.loadRule();
     }
 
     loadRule() {
-        this.service.getRule().subscribe({
+        this.service.getRule(this.selectedLocationScope || undefined, true).subscribe({
             next: (res: any) => {
-                if (res) this.form = { ...this.form, ...res };
+                if (res) {
+                    this.form = { ...this.form, ...res };
+                    this.isInherited = Boolean(res.isInherited);
+                } else {
+                    this.isInherited = Boolean(this.selectedLocationScope);
+                }
             },
             error: (err: any) => this.notify.error('Failed to load payroll rules', err.message)
         });
@@ -190,10 +241,16 @@ export class PayrollSettingsComponent implements OnInit {
 
     save() {
         this.saving = true;
-        this.service.upsertRule(this.form).subscribe({
+        this.service.upsertRule(this.form, this.selectedLocationScope || undefined).subscribe({
             next: (res: any) => {
                 this.saving = false;
-                this.notify.success('Rules Updated', 'Payroll configuration saved successfully');
+                this.isInherited = false;
+                this.notify.success(
+                    'Rules Updated',
+                    this.selectedLocationScope
+                        ? 'Branch override configuration saved successfully'
+                        : 'Company Master Default saved successfully'
+                );
             },
             error: (err: any) => {
                 this.saving = false;

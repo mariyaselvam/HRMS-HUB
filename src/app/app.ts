@@ -11,7 +11,9 @@ import { SidebarComponent } from './shared/components/sidebar/sidebar.component'
 import { AuthService } from './core/services/auth.service';
 import { ThemeService } from './core/services/theme.service';
 import { LocationStore } from './store/location.store';
+import { ClusterStore } from './store/cluster.store';
 import { ContextStore } from './store/context.store';
+import { computed } from '@angular/core';
 
 @Component({
     selector: 'app-root',
@@ -35,15 +37,52 @@ export class App {
     authService = inject(AuthService);
     themeService = inject(ThemeService);
     locationStore = inject(LocationStore);
+    clusterStore = inject(ClusterStore);
     contextStore = inject(ContextStore);
     
-    sidebarVisible = signal(false); // Used across the app previously, let's keep it for mobile open state or rename.
+    sidebarVisible = signal(false);
     isMobileOpen = signal(false);
     isDesktopCollapsed = signal(false);
 
+    hierarchicalBranchOptions = computed(() => {
+        const clusters = this.clusterStore.clusters();
+        const locations = this.locationStore.locations();
+        
+        const groups: Array<{ label: string; items: Array<{ label: string; value: string }> }> = [];
+
+        // Group branches by Cluster
+        for (const cl of clusters) {
+            const clusterBranches = locations.filter(l => l.clusterId === cl.id);
+            if (clusterBranches.length > 0) {
+                groups.push({
+                    label: `🌐 ${cl.name} ${cl.state ? '(' + cl.state + ')' : ''}`,
+                    items: clusterBranches.map(b => ({
+                        label: `📍 ${b.name}`,
+                        value: b.id
+                    }))
+                });
+            }
+        }
+
+        // Standalone branches (no cluster)
+        const standaloneBranches = locations.filter(l => !l.clusterId);
+        if (standaloneBranches.length > 0) {
+            groups.push({
+                label: '🏢 Standalone Branches',
+                items: standaloneBranches.map(b => ({
+                    label: `📍 ${b.name}`,
+                    value: b.id
+                }))
+            });
+        }
+
+        return groups;
+    });
+
     constructor() {
-        if (this.authService.isLoggedIn() && this.authService.hasRole('company_admin')) {
+        if (this.authService.isLoggedIn() && (this.authService.hasRole('company_admin') || this.authService.hasRole('Cluster Manager') || this.authService.hasRole('Super Admin'))) {
             this.locationStore.loadLocations();
+            this.clusterStore.loadClusters();
         }
     }
 

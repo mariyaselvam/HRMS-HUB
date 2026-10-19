@@ -25,10 +25,17 @@
         />
       </div>
 
+      <app-button
+        label="Multi-Branch Batch Run"
+        icon="pi pi-bolt"
+        variant="secondary"
+        (onClick)="showBatchModal.set(true)"
+      ></app-button>
+
       @if (store.records().length === 0) {
         <app-button
           label="Generate Payroll"
-          icon="pi pi-bolt"
+          icon="pi pi-play"
           variant="primary"
           [loading]="store.loading()"
           (onClick)="onGenerate()"
@@ -313,3 +320,9 @@
     </div>
   }
 </p-dialog>
+
+<app-manual-payroll-modal 
+  [visible]="showBatchModal()" 
+  (visibleChange)="showBatchModal.set($event)" 
+  (onSuccess)="loadPayroll()">
+</app-manual-payroll-modal>

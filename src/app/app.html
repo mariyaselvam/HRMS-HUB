@@ -30,11 +30,12 @@
       </div>
 
       <div class="flex items-center gap-4">
-        <!-- Branch Context Switcher -->
-        @if (authService.hasRole('company_admin')) {
-        <p-select [options]="locationStore.locations()" optionLabel="name" optionValue="id"
+        <!-- Hierarchical Branch Context Switcher -->
+        @if (authService.hasRole('company_admin') || authService.hasRole('Cluster Manager') || authService.hasRole('Super Admin')) {
+        <p-select [options]="hierarchicalBranchOptions()" [group]="true"
+          optionLabel="label" optionValue="value" optionGroupLabel="label" optionGroupChildren="items"
           [ngModel]="contextStore.activeBranchId()" (ngModelChange)="contextStore.setActiveBranch($event)"
-          placeholder="All Branches" [showClear]="true" class="w-48 !h-9 !text-sm">
+          placeholder="All Branches (Global)" [showClear]="true" class="w-60 !h-9 !text-sm">
         </p-select>
         }
 

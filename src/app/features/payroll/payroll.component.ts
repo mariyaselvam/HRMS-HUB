@@ -8,6 +8,7 @@ import { CardModule } from 'primeng/card';
 import { FormsModule } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
 import { DividerModule } from 'primeng/divider';
+import { ManualPayrollModalComponent } from '../settings/pages/components/manual-payroll-modal.component';
 
 @Component({
     selector: 'app-payroll',
@@ -20,7 +21,8 @@ import { DividerModule } from 'primeng/divider';
         CardModule,
         FormsModule,
         DialogModule,
-        DividerModule
+        DividerModule,
+        ManualPayrollModalComponent
     ],
     templateUrl: './payroll.component.html'
 })
@@ -30,6 +32,7 @@ export class PayrollComponent implements OnInit {
     selectedMonth: Date | undefined = new Date();
     selectedRecord = signal<any>(null);
     showDetail = signal<boolean>(false);
+    showBatchModal = signal<boolean>(false);
 
     columns: Column[] = [
         { field: 'employeeName', header: 'Employee' },

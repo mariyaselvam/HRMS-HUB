@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LocationStore } from '../../store/location.store';
+import { ClusterStore } from '../../store/cluster.store';
 import { CommonTableComponent, Column } from '../../shared/components/common-table/common-table.component';
 import { CommonButtonComponent } from '../../shared/components/common-button.component/common-button.component';
 import { CardModule } from 'primeng/card';
@@ -27,15 +28,19 @@ import { NotificationService } from '../../core/services/notification.service';
 })
 export class LocationListComponent implements OnInit {
     protected store = inject(LocationStore);
+    protected clusterStore = inject(ClusterStore);
     private fb = inject(FormBuilder);
     private notify = inject(NotificationService);
 
     showDialog = false;
+    showClusterDialog = false;
     submitted = false;
+    clusterSubmitted = false;
     editingLocation: WorkLocation | null = null;
 
     columns: Column[] = [
         { field: 'name', header: 'Branch Name' },
+        { field: 'cluster.name', header: 'Regional Cluster' },
         { field: 'address', header: 'Address' },
         { field: '_count.employees', header: 'Employees' },
         { field: 'createdAt', header: 'Created At', type: 'date' }
@@ -43,13 +48,21 @@ export class LocationListComponent implements OnInit {
 
     form = this.fb.group({
         name: ['', [Validators.required]],
+        clusterId: [null as string | null],
         address: [''],
-        latitude: [null],
-        longitude: [null]
+        latitude: [null as number | null],
+        longitude: [null as number | null]
+    });
+
+    clusterForm = this.fb.group({
+        name: ['', [Validators.required]],
+        code: ['', [Validators.required]],
+        state: ['']
     });
 
     ngOnInit() {
         this.store.loadLocations();
+        this.clusterStore.loadClusters();
     }
 
     get dialogTitle(): string {
@@ -67,6 +80,7 @@ export class LocationListComponent implements OnInit {
         this.editingLocation = location;
         this.form.patchValue({
             name: location.name,
+            clusterId: location.clusterId || null,
             address: location.address,
             latitude: location.latitude as any,
             longitude: location.longitude as any
@@ -77,7 +91,6 @@ export class LocationListComponent implements OnInit {
 
     onDelete(location: WorkLocation) {
         this.notify.confirmDelete(location.name, () => {
-            // this.store.deleteLocation(location.id); // Placeholder
             this.notify.warn('Feature coming soon', 'Deletion is not yet implemented for branches.');
         });
     }
@@ -88,12 +101,33 @@ export class LocationListComponent implements OnInit {
             const val = this.form.value;
             const payload = {
                 ...val,
+                clusterId: val.clusterId || null,
                 latitude: val.latitude ? Number(val.latitude) : null,
                 longitude: val.longitude ? Number(val.longitude) : null
             };
             this.store.addLocation(payload as any);
             this.showDialog = false;
         }
+    }
+
+    onCreateCluster() {
+        this.clusterSubmitted = true;
+        if (this.clusterForm.valid) {
+            const val = this.clusterForm.value;
+            this.clusterStore.addCluster({
+                name: val.name!,
+                code: val.code!,
+                state: val.state || undefined
+            });
+            this.clusterForm.reset();
+            this.clusterSubmitted = false;
+        }
+    }
+
+    onDeleteCluster(clusterId: string, clusterName: string) {
+        this.notify.confirmDelete(clusterName, () => {
+            this.clusterStore.deleteCluster(clusterId);
+        });
     }
 
     getErrorMessage(controlName: string): string | null {

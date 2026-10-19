@@ -19,6 +19,7 @@ export enum AttendanceStatus {
 export enum SystemRole {
     SUPER_ADMIN = 'Super Admin',
     COMPANY_ADMIN = 'Company Admin',
+    CLUSTER_MANAGER = 'Cluster Manager',
     HR_MANAGER = 'HR Manager',
     PAYROLL_MANAGER = 'Payroll Manager',
     ONBOARDING_MANAGER = 'Onboarding Manager',
@@ -30,14 +31,15 @@ export enum SystemRole {
  * Role groups for authorization checks.
  */
 export const RoleGroups = {
-    ADMIN: [SystemRole.SUPER_ADMIN, SystemRole.COMPANY_ADMIN],
-    HR: [SystemRole.SUPER_ADMIN, SystemRole.COMPANY_ADMIN, SystemRole.HR_MANAGER],
-    PAYROLL: [SystemRole.SUPER_ADMIN, SystemRole.COMPANY_ADMIN, SystemRole.PAYROLL_MANAGER],
+    ADMIN: [SystemRole.SUPER_ADMIN, SystemRole.COMPANY_ADMIN, SystemRole.CLUSTER_MANAGER],
+    HR: [SystemRole.SUPER_ADMIN, SystemRole.COMPANY_ADMIN, SystemRole.CLUSTER_MANAGER, SystemRole.HR_MANAGER],
+    PAYROLL: [SystemRole.SUPER_ADMIN, SystemRole.COMPANY_ADMIN, SystemRole.CLUSTER_MANAGER, SystemRole.PAYROLL_MANAGER],
     ONBOARDING: [SystemRole.SUPER_ADMIN, SystemRole.COMPANY_ADMIN, SystemRole.ONBOARDING_MANAGER],
-    BRANCH_MANAGER: [SystemRole.SUPER_ADMIN, SystemRole.COMPANY_ADMIN, SystemRole.BRANCH_MANAGER],
+    BRANCH_MANAGER: [SystemRole.SUPER_ADMIN, SystemRole.COMPANY_ADMIN, SystemRole.CLUSTER_MANAGER, SystemRole.BRANCH_MANAGER],
     ALL_MANAGERS: [
         SystemRole.SUPER_ADMIN,
         SystemRole.COMPANY_ADMIN,
+        SystemRole.CLUSTER_MANAGER,
         SystemRole.HR_MANAGER,
         SystemRole.PAYROLL_MANAGER,
         SystemRole.ONBOARDING_MANAGER,

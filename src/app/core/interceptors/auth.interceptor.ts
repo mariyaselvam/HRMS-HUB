@@ -10,6 +10,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     
     const token = authService.getToken();
     const activeBranchId = contextStore.activeBranchId();
+    const activeClusterId = contextStore.activeClusterId();
 
     let headers = req.headers;
     if (token) {
@@ -18,6 +19,10 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     
     if (activeBranchId) {
         headers = headers.set('x-branch-id', activeBranchId);
+    }
+
+    if (activeClusterId) {
+        headers = headers.set('x-cluster-id', activeClusterId);
     }
 
     const authReq = req.clone({ headers });
