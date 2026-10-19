@@ -54,7 +54,6 @@ export interface Employee {
   role?: string;
   onboardingStep: number;
   profileCompletion: number;
-  // Raw details for forms
   personalDetails?: any;
   jobDetails?: any;
   bankDetails?: any;

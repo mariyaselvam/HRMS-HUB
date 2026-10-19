@@ -9,6 +9,7 @@ import { finalize } from 'rxjs';
 @Injectable({
     providedIn: 'root'
 })
+
 export class DashboardStore {
     private http = inject(BaseHttpService);
     private notify = inject(NotificationService);

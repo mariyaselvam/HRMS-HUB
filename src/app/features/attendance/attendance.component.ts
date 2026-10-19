@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { AttendanceStore } from '../../store/attendance.store';
 import { CommonTableComponent, Column } from '../../shared/components/common-table/common-table.component';
 import { CommonButtonComponent } from '../../shared/components/common-button.component/common-button.component';
-import { CommonInputComponent } from '../../shared/components/common-input/common-input.component';
 import { CommonSelectComponent } from '../../shared/components/common-select/common-select.component';
 import { CommonRangePickerComponent } from '../../shared/components/datepicker/common-range-picker/common-range-picker.component';
 import { CardModule } from 'primeng/card';

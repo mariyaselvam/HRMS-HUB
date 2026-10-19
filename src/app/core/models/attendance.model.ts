@@ -20,9 +20,9 @@ export interface AttendanceLog {
     employeeId: string;
     shiftId?: string | null;
     workLocationId?: string | null;
-    attendanceDate: string;   // ISO date string — comes as "attendanceDate" from backend
-    checkIn: string | null;   // ISO datetime string
-    checkOut: string | null;  // ISO datetime string
+    attendanceDate: string; // ISO date string — comes as "attendanceDate" from backend
+    checkIn: string | null; // ISO datetime string
+    checkOut: string | null; // ISO datetime string
     totalHours: number | null; // Calculated on checkout
     status: AttendanceStatus;
     note?: string;
