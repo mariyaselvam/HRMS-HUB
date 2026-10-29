@@ -7,6 +7,10 @@
     @apply w-full rounded-xl py-2.5 px-3.5 border-[1.5px] border-slate-300 bg-white text-slate-800 text-sm transition-all outline-none;
 }
 
+:host ::ng-deep .form-input-sm.p-inputtext {
+    @apply h-8 py-1.5 px-3 text-xs !important;
+}
+
 .dark :host ::ng-deep .form-input.p-inputtext {
     @apply border-slate-700 bg-slate-900 text-slate-100;
 }

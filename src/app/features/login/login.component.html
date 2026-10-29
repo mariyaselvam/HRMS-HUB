@@ -1,85 +1,93 @@
 <div class="login-wrapper">
-    <!-- Left: Branding Panel -->
-    <div class="branding-panel">
-        <div class="branding-content">
-            <div class="brand-icon">
-                <i class="pi pi-building text-5xl text-white"></i>
-            </div>
-            <h1 class="brand-title">HRMS</h1>
-            <p class="brand-subtitle">People Operations Platform</p>
-            <div class="brand-features">
-                <div class="feature-item">
-                    <i class="pi pi-check-circle"></i>
-                    <span>Employee Management</span>
-                </div>
-                <div class="feature-item">
-                    <i class="pi pi-check-circle"></i>
-                    <span>Attendance & Leave Tracking</span>
-                </div>
-                <div class="feature-item">
-                    <i class="pi pi-check-circle"></i>
-                    <span>Payroll Processing</span>
-                </div>
-                <div class="feature-item">
-                    <i class="pi pi-check-circle"></i>
-                    <span>Multi-role Access Control</span>
-                </div>
-            </div>
+  <!-- Left: Branding Panel -->
+  <div class="branding-panel">
+    <div class="branding-content">
+      <div class="brand-icon">
+        <i class="pi pi-building text-5xl text-white"></i>
+      </div>
+      <h1 class="brand-title">HRMS</h1>
+      <p class="brand-subtitle">People Operations Platform</p>
+      <div class="brand-features">
+        <div class="feature-item">
+          <i class="pi pi-check-circle"></i>
+          <span>Employee Management</span>
         </div>
-        <p class="brand-footer">&copy; 2026 HRMS. All rights reserved.</p>
-    </div>
-
-    <!-- Right: Login Form -->
-    <div class="form-panel">
-        <div class="form-container">
-            <div class="form-header">
-                <h2 class="form-title">Welcome back</h2>
-                <p class="form-subtitle">Sign in to your account to continue</p>
-            </div>
-
-            @if (errorMessage) {
-            <p-message severity="error" [text]="errorMessage" class="w-full mb-4"></p-message>
-            }
-
-            <form (ngSubmit)="onSubmit()" class="login-form">
-                <div class="field-group">
-                    <label for="email" class="field-label">Email address</label>
-                    <div class="input-wrapper">
-                        <i class="pi pi-envelope input-icon"></i>
-                        <input id="email" type="email" pInputText [(ngModel)]="email" name="email"
-                            placeholder="name@company.com" class="login-input" autocomplete="email" />
-                    </div>
-                </div>
-
-                <div class="field-group">
-                    <div class="flex justify-between items-center mb-1">
-                        <label for="password" class="field-label mb-0">Password</label>
-                        <a href="javascript:void(0)" class="forgot-link">Forgot password?</a>
-                    </div>
-                    <div class="input-wrapper">
-                        <i class="pi pi-lock input-icon"></i>
-                        <input id="password" [type]="showPassword ? 'text' : 'password'" pInputText [(ngModel)]="password" name="password"
-                            placeholder="Enter your password" class="login-input pr-12" autocomplete="current-password" />
-                        <button type="button" 
-                            class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 focus:outline-none z-20 cursor-pointer"
-                            (click)="showPassword = !showPassword">
-                            <i [class]="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <p-button type="submit" label="Sign in" icon="pi pi-sign-in" [loading]="loading"
-                    class="w-full login-btn flex justify-center items-center" class="w-full block"></p-button>
-            </form>
-
-            <div class="role-hints">
-                <p class="role-hints-title">Login as:</p>
-                <div class="role-chips">
-                    <span class="role-chip chip-super">Super Admin</span>
-                    <span class="role-chip chip-company">Company Admin</span>
-                    <span class="role-chip chip-employee">Employee</span>
-                </div>
-            </div>
+        <div class="feature-item">
+          <i class="pi pi-check-circle"></i>
+          <span>Attendance & Leave Tracking</span>
         </div>
+        <div class="feature-item">
+          <i class="pi pi-check-circle"></i>
+          <span>Payroll Processing</span>
+        </div>
+        <div class="feature-item">
+          <i class="pi pi-check-circle"></i>
+          <span>Multi-role Access Control</span>
+        </div>
+      </div>
     </div>
+    <p class="brand-footer">&copy; 2026 HRMS. All rights reserved.</p>
+  </div>
+
+  <!-- Right: Login Form -->
+  <div class="form-panel">
+    <div class="form-container">
+      <div class="form-header">
+        <h2 class="form-title">Welcome back</h2>
+        <p class="form-subtitle">Sign in to your account to continue</p>
+      </div>
+
+      @if (errorMessage) {
+        <p-message severity="error" [text]="errorMessage" class="w-full mb-4"></p-message>
+      }
+
+      <form (ngSubmit)="onSubmit()" class="login-form">
+        <app-common-input
+          id="email"
+          label="Email address"
+          type="email"
+          size="lg"
+          placeholder="name@company.com"
+          icon="pi pi-envelope"
+          autocomplete="email"
+          [(ngModel)]="email"
+          name="email"
+        ></app-common-input>
+
+        <app-common-input
+          id="password"
+          label="Password"
+          type="password"
+          size="lg"
+          placeholder="Enter your password"
+          icon="pi pi-lock"
+          autocomplete="current-password"
+          [(ngModel)]="password"
+          name="password"
+        >
+          <a action href="javascript:void(0)" class="forgot-link">Forgot password?</a>
+        </app-common-input>
+
+        <app-button
+          type="submit"
+          label="Sign in"
+          icon="pi pi-sign-in"
+          variant="primary"
+          size="lg"
+          [fullWidth]="true"
+          [loading]="loading"
+          class="w-full mt-2"
+        ></app-button>
+      </form>
+
+      <div class="role-hints">
+        <p class="role-hints-title">Login as:</p>
+        <div class="role-chips">
+          <span class="role-chip chip-super">Super Admin</span>
+          <span class="role-chip chip-company">Company Admin</span>
+          <span class="role-chip chip-employee">Employee</span>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

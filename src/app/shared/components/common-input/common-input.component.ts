@@ -24,16 +24,30 @@ export class CommonInputComponent implements ControlValueAccessor {
     id = input<string>('input-' + Math.random().toString(36).substring(2, 9));
     label = input<string>('');
     type = input<string>('text');
+    size = input<'sm' | 'md' | 'lg'>('md');
     placeholder = input<string>('');
+    autocomplete = input<string>('');
     hint = input<string>('');
     error = input<string | null>(null);
     icon = input<string | null>(null);
     iconPosition = input<'left' | 'right'>('left');
     disabled = signal<boolean>(false);
+    showPassword = signal<boolean>(false);
     value: string = '';
 
     onChange: any = () => { };
     onTouched: any = () => { };
+
+    togglePassword(): void {
+        this.showPassword.update((val) => !val);
+    }
+
+    get computedType(): string {
+        if (this.type() === 'password') {
+            return this.showPassword() ? 'text' : 'password';
+        }
+        return this.type();
+    }
 
     writeValue(value: any): void {
         this.value = value;

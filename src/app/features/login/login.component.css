@@ -1,187 +1,143 @@
 /* ========== Login Page Styles ========== */
 
 .login-wrapper {
-    @apply flex min-h-screen bg-slate-50 transition-colors duration-300;
+  @apply flex min-h-screen bg-slate-50 transition-colors duration-300;
 }
 
 :host-context(.dark) .login-wrapper {
-    @apply bg-slate-950;
+  @apply bg-slate-950;
 }
 
 /* --- Left Branding Panel --- */
 .branding-panel {
-    @apply hidden lg:flex flex-col justify-between w-[45%] bg-gradient-to-br from-indigo-600 via-violet-600 to-purple-700 p-12 text-white relative overflow-hidden;
+  @apply hidden lg:flex flex-col justify-between w-[45%] bg-gradient-to-br from-indigo-600 via-violet-600 to-purple-700 p-12 text-white relative overflow-hidden;
 }
 
 .branding-panel::before {
-    content: '';
-    @apply absolute top-[-50%] right-[-30%] w-[80%] h-[160%] rounded-full;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
+  content: '';
+  @apply absolute top-[-50%] right-[-30%] w-[80%] h-[160%] rounded-full;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
 }
 
 .branding-panel::after {
-    content: '';
-    @apply absolute bottom-[-40%] left-[-20%] w-[60%] h-[120%] rounded-full;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+  content: '';
+  @apply absolute bottom-[-40%] left-[-20%] w-[60%] h-[120%] rounded-full;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
 }
 
 .branding-content {
-    @apply relative z-10 mt-16;
+  @apply relative z-10 mt-16;
 }
 
 .brand-icon {
-    @apply w-20 h-20 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center mb-8 border border-white/20;
+  @apply w-20 h-20 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center mb-8 border border-white/20;
 }
 
 .brand-title {
-    @apply text-5xl font-extrabold tracking-tight mb-2;
+  @apply text-5xl font-extrabold tracking-tight mb-2;
 }
 
 .brand-subtitle {
-    @apply text-xl opacity-90 font-light mb-12;
+  @apply text-xl opacity-90 font-light mb-12;
 }
 
 .brand-features {
-    @apply flex flex-col gap-4;
+  @apply flex flex-col gap-4;
 }
 
 .feature-item {
-    @apply flex items-center gap-3 text-sm opacity-90;
+  @apply flex items-center gap-3 text-sm opacity-90;
 }
 
 .feature-item i {
-    @apply text-lg opacity-80;
+  @apply text-lg opacity-80;
 }
 
 .brand-footer {
-    @apply relative z-10 text-xs opacity-60;
+  @apply relative z-10 text-xs opacity-60;
 }
 
 /* --- Right Form Panel --- */
 .form-panel {
-    @apply flex-1 flex items-center justify-center p-8;
+  @apply flex-1 flex items-center justify-center p-8;
 }
 
 .form-container {
-    @apply w-full max-w-[420px];
+  @apply w-full max-w-[420px];
 }
 
 .form-header {
-    @apply mb-10;
+  @apply mb-10;
 }
 
 .form-title {
-    @apply text-3xl font-bold text-slate-900 mb-2;
+  @apply text-3xl font-bold text-slate-900 mb-2;
 }
 
 :host-context(.dark) .form-title {
-    @apply text-white;
+  @apply text-white;
 }
 
 .form-subtitle {
-    @apply text-slate-500 text-sm;
+  @apply text-slate-500 text-sm;
 }
 
 :host-context(.dark) .form-subtitle {
-    @apply text-slate-400;
+  @apply text-slate-400;
 }
 
 .login-form {
-    @apply flex flex-col gap-5;
-}
-
-.field-group {
-    @apply flex flex-col;
-}
-
-.field-label {
-    @apply text-xs font-bold text-slate-700 mb-2 uppercase tracking-wider;
-}
-
-:host-context(.dark) .field-label {
-    @apply text-slate-400;
-}
-
-.input-wrapper {
-    @apply relative;
-}
-
-.input-icon {
-    @apply absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm z-10 pointer-events-none;
-}
-
-.login-input {
-    @apply w-full pl-11 h-12 rounded-xl border-slate-300 text-sm transition-all bg-white text-slate-900 !important;
-}
-
-:host-context(.dark) .login-input {
-    @apply bg-slate-900 border-slate-800 text-white !important;
-}
-
-.login-input:focus {
-    @apply border-indigo-500 ring-4 ring-indigo-500/10 !important;
-}
-
-.login-input::placeholder {
-    @apply text-slate-400;
+  @apply flex flex-col gap-5;
 }
 
 .forgot-link {
-    @apply text-xs text-indigo-600 font-semibold hover:underline;
+  @apply text-xs text-indigo-600 hover:text-indigo-700 font-semibold hover:underline cursor-pointer transition-colors;
 }
 
-.dark .forgot-link {
-    @apply text-indigo-400;
-}
-
-:host ::ng-deep .login-btn {
-    @apply h-12 rounded-xl font-bold text-base bg-gradient-to-r from-indigo-600 to-violet-600 border-none mt-2 shadow-lg shadow-indigo-500/20 !important;
-}
-
-:host ::ng-deep .login-btn:hover {
-    @apply from-indigo-700 to-violet-700 shadow-indigo-500/40 translate-y-[-1px] !important;
+:host-context(.dark) .forgot-link {
+  @apply text-indigo-400 hover:text-indigo-300;
 }
 
 .role-hints {
-    @apply mt-10 pt-8 border-t border-slate-300 text-center;
+  @apply mt-10 pt-8 border-t border-slate-300 text-center;
 }
 
 :host-context(.dark) .role-hints {
-    @apply border-slate-800;
+  @apply border-slate-800;
 }
 
 .role-hints-title {
-    @apply text-xs text-slate-400 mb-4 font-medium;
+  @apply text-xs text-slate-400 mb-4 font-medium;
 }
 
 .role-chips {
-    @apply flex gap-2 justify-center flex-wrap;
+  @apply flex gap-2 justify-center flex-wrap;
 }
 
 .role-chip {
-    @apply text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-tighter transition-all;
+  @apply text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-tighter transition-all;
 }
 
 .chip-super {
-    @apply bg-amber-50 text-amber-700 border border-amber-200/50;
+  @apply bg-amber-50 text-amber-700 border border-amber-200/50;
 }
 
 .dark .chip-super {
-    @apply bg-amber-950/30 text-amber-400 border-amber-800/50;
+  @apply bg-amber-950/30 text-amber-400 border-amber-800/50;
 }
 
 .chip-company {
-    @apply bg-blue-50 text-blue-700 border border-blue-200/50;
+  @apply bg-blue-50 text-blue-700 border border-blue-200/50;
 }
 
 .dark .chip-company {
-    @apply bg-blue-950/30 text-blue-400 border-blue-800/50;
+  @apply bg-blue-950/30 text-blue-400 border-blue-800/50;
 }
 
 .chip-employee {
-    @apply bg-emerald-50 text-emerald-700 border border-emerald-200/50;
+  @apply bg-emerald-50 text-emerald-700 border border-emerald-200/50;
 }
 
 .dark .chip-employee {
-    @apply bg-emerald-950/30 text-emerald-400 border-emerald-800/50;
+  @apply bg-emerald-950/30 text-emerald-400 border-emerald-800/50;
 }

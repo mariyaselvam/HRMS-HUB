@@ -1,23 +1,47 @@
 <div class="flex flex-col gap-2 w-full">
-    <div class="flex justify-between items-center w-full h-[15px]">
+    <div class="flex justify-between items-center w-full min-h-[16px]">
+        @if (label()) {
         <label [for]="id()" class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.1em]">{{
             label() }}</label>
-        @if (error()) {
-        <span class="text-rose-500 text-[10px] font-semibold uppercase tracking-[0.05em]">{{ error() }}</span>
         }
+        <div class="flex items-center gap-2">
+            <ng-content select="[action]"></ng-content>
+            @if (error()) {
+            <span class="text-rose-500 text-[10px] font-semibold uppercase tracking-[0.05em]">{{ error() }}</span>
+            }
+        </div>
     </div>
 
     @if (icon()) {
-    <p-iconfield [iconPosition]="iconPosition()">
+    <p-iconfield [iconPosition]="iconPosition()" class="w-full relative block">
         <p-inputicon><i [class]="icon()!"></i></p-inputicon>
-        <input pInputText [id]="id()" [type]="type()" [placeholder]="placeholder()" class="form-input w-full !pl-10"
-            [class.input-error]="error()" [disabled]="disabled()" [(ngModel)]="value"
-            (ngModelChange)="onValueChange($event)" (blur)="onBlur()" />
+        <input pInputText [id]="id()" [type]="computedType" [placeholder]="placeholder()" [autocomplete]="autocomplete()"
+            class="form-input w-full !pl-10" [class.form-input-lg]="size() === 'lg'"
+            [class.form-input-sm]="size() === 'sm'"
+            [class.!pr-12]="type() === 'password' || iconPosition() === 'right'" [class.input-error]="error()"
+            [disabled]="disabled()" [(ngModel)]="value" (ngModelChange)="onValueChange($event)" (blur)="onBlur()" />
+        @if (type() === 'password') {
+        <button type="button" (click)="togglePassword()" tabindex="-1"
+            class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 focus:outline-none z-10 cursor-pointer p-1 flex items-center justify-center transition-colors"
+            aria-label="Toggle password visibility">
+            <i [class]="showPassword() ? 'pi pi-eye-slash' : 'pi pi-eye'" class="text-sm"></i>
+        </button>
+        }
     </p-iconfield>
     } @else {
-    <input pInputText [id]="id()" [type]="type()" [placeholder]="placeholder()" class="form-input w-full"
-        [class.input-error]="error()" [disabled]="disabled()" [(ngModel)]="value"
-        (ngModelChange)="onValueChange($event)" (blur)="onBlur()" />
+    <div class="relative w-full">
+        <input pInputText [id]="id()" [type]="computedType" [placeholder]="placeholder()" [autocomplete]="autocomplete()"
+            class="form-input w-full" [class.form-input-lg]="size() === 'lg'" [class.form-input-sm]="size() === 'sm'"
+            [class.!pr-12]="type() === 'password'" [class.input-error]="error()" [disabled]="disabled()"
+            [(ngModel)]="value" (ngModelChange)="onValueChange($event)" (blur)="onBlur()" />
+        @if (type() === 'password') {
+        <button type="button" (click)="togglePassword()" tabindex="-1"
+            class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 focus:outline-none z-10 cursor-pointer p-1 flex items-center justify-center transition-colors"
+            aria-label="Toggle password visibility">
+            <i [class]="showPassword() ? 'pi pi-eye-slash' : 'pi pi-eye'" class="text-sm"></i>
+        </button>
+        }
+    </div>
     }
     @if (hint() && !error()) {
     <small class="text-slate-400 text-xs">{{ hint() }}</small>
